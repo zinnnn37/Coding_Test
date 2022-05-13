@@ -10,7 +10,6 @@ int main() {
             printf(" ");
             k++;
         }
-        j = n;
         while (j > n - i - 1) {
             printf("*");
             j--;
