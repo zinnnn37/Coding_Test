@@ -1,10 +1,8 @@
-def fibo(n, z, o):
+def fibo(n, arr):
     for i in range(2, n+1):
-        z.append(z[i-2] + z[i-1])
-        o.append(o[i-2] + o[i-1])
-    print(z[n], o[n])
+        arr.append(arr[i-2] + arr[i-1])
+    print(arr[n-1], arr[n])
 
 for _ in range(int(input())):
-    z = [1, 0]
-    o = [0, 1]
-    fibo(int(input()), z, o)
+    arr = [0, 1]
+    fibo(int(input()), arr)
