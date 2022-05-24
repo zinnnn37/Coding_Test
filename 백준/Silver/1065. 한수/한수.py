@@ -4,10 +4,10 @@ def check(n):
     else:
         if (n == 1000):
             n -= 1
-        cnt = 0
+        cnt = 99
         for i in range(100, n+1):
             cnt += sequence(i, i//10)
-        return (cnt + 99)
+        return (cnt)
     
 def sequence(n, m):
     if (m // 10 == 0):
