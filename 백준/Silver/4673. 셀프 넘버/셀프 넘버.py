@@ -7,7 +7,7 @@ def selfnum():
     for i in range(1, 10001):
         n = d(i)
         if (n <= 10000):
-            constructor.add(d(i))
+            constructor.add(n)
     for i in range(1, 10001):
         if i not in constructor:
             print(i)
