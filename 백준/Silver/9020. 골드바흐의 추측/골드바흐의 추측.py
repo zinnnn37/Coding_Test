@@ -13,7 +13,6 @@ n = int(stdin.readline())
 for i in range(n):
     num = int(stdin.readline())
     for j in range(num // 2, 1, -1):
-        if (prime(j) == 1):
-            if (prime(num-j) == 1):
-                print(j, num-j)
-                break
+        if (prime(j) == 1 and prime(num-j) == 1):
+            print(j, num-j)
+            break
