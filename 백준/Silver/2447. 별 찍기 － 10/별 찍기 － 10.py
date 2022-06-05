@@ -1,12 +1,12 @@
 def _star(arr):
     res = []
     length = len(arr)
-    for i in range(length * 3): # 0~9
+    for i in range(length * 3):
         if i // length == 1:
             res.append(arr[i % length] + ' ' * length + arr[i % length])
         else:
             res.append(arr[i % length] * 3)
-    return (list(res))
+    return (res)
 
 def star(n):
     arr = ["***", "* *", "***"]
