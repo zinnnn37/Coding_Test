@@ -6,7 +6,7 @@ def blackJack(n, ans, res, cards, biggest, idx):
     else:
         while (idx < len(cards)):
             ans.append(cards[idx])
-            idx += 1 # 여기서 idx++ 했는데 재귀 안에서 또 해서 그럼..
+            idx += 1
             biggest = blackJack(n + 1, ans, res, cards, biggest, idx)
             ans.pop()
     return biggest
