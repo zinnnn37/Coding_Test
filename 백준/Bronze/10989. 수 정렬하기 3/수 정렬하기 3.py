@@ -8,8 +8,9 @@ def sorting(n):
 
     for i in range(10001):
         if cnt[i] != 0:
-            for j in range(cnt[i]):
-                print(i)
-
+            while cnt[i] > 1000:
+                    sys.stdout.write((str(i) + '\n') * 1000)
+                    cnt[i] -= 1000
+            sys.stdout.write((str(i) + '\n') * cnt[i])
 n = int(input())
 sorting(n)
