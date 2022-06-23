@@ -1,18 +1,12 @@
 import sys
-from collections import defaultdict
+from collections import Counter
 input = sys.stdin.readline
 
 def sol():
-    m = int(input())
-    cards_have = list(map(int, input().split()))
-    n = int(input())
-    cards_check = list(map(int, input().split()))
-    
-    checker = defaultdict(int)
-    for i in cards_have:
-        checker[i] += 1
-
-    for i in cards_check:
-        print(checker[i], end=' ')
+    input()
+    cards_have = Counter(input().split())
+    input()
+    cards_check = [cards_have[i] for i in input().split()]
+    print(' '.join(map(str, cards_check)))
 
 sol()
