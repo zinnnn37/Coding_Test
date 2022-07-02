@@ -3,20 +3,11 @@ input = sys.stdin.readline
 
 def sol():
     k = int(input())
-    length = [list(map(int, input().split())) for _ in range(6)]
-    w, idx_w = 0, 0
-    h, idx_h = 0, 0
-    for i in range(6):
-        if length[i][0] <= 2:
-            if w < length[i][1]:
-                w = length[i][1]
-                idx_w = i
-        else:
-            if h < length[i][1]:
-                h = length[i][1]
-                idx_h = i
-    small_w = abs(length[(idx_w-1) % 6][1] - length[(idx_w+1) % 6][1])
-    small_h = abs(length[(idx_h-1) % 6][1] - length[(idx_h+1) % 6][1])
-    print((w*h - small_w*small_h) * k)
-    
+    length = [list(map(int, input().split()))[1] for _ in range(6)]
+    max_idx1 = length.index(max(length))
+    max_idx2 = length.index(max(length[(max_idx1-1) % 6], length[(max_idx1+1) % 6]))
+    small1 = abs(length[(max_idx1-1) % 6] - length[(max_idx1+1) % 6])
+    small2 = abs(length[(max_idx2-1) % 6] - length[(max_idx2+1) % 6])
+    print((length[max_idx1]*length[max_idx2] - small1*small2) * k)
+
 sol()
