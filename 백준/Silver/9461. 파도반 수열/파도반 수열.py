@@ -8,9 +8,8 @@ def triangle(n, dp):
     return dp[n]
 
 def sol():
+    dp = [0] * 101
     for _ in range(int(input())):
-        n = int(input())
-        dp = [0] * (n + 3)
-        print(triangle(n, dp))
+        print(triangle(int(input()), dp))
 
 sol()
