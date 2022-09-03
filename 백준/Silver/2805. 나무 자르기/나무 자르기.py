@@ -9,9 +9,8 @@ def sol():
         mid = (start+end) // 2
         res = 0
         for l in length:
-            tmp = l - mid
-            if tmp > 0:
-                res += tmp
+            if l > mid:
+                res += l - mid
         if res >= m:
             start = mid + 1
         else:
