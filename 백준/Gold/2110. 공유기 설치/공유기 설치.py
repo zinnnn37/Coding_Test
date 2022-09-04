@@ -10,7 +10,7 @@ def sol():
         mid = (start + end) // 2
         cnt = 1
         wifi = min(house) + mid
-        for i in range(1, len(house)):
+        for i in range(1, n):
             if house[i] >= wifi:
                 cnt += 1
                 wifi = house[i] + mid
