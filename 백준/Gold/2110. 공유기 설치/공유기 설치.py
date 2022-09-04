@@ -5,7 +5,7 @@ def sol():
     n, c = map(int, input().split())
     house = [int(input()) for _ in range(n)]
     house.sort()
-    start, end = 1, max(house) - 1
+    start, end = 1, max(house) - min(house)
     while start <= end:
         mid = (start + end) // 2
         cnt = 1
