@@ -13,6 +13,6 @@ def sol():
             except:
                 print(0)
         else:
-            heapq.heappush(h, [abs(n)] + [1 if n >= 0 else -1])
+            heapq.heappush(h, [abs(n), 1 if n >= 0 else -1])
 
 sol()
