@@ -15,7 +15,6 @@ def bfs(start):
 	return sum(visited)
 
 if __name__ == '__main__':
-	INF = sys.maxsize
 	n, m = map(int, input().split())
 	graph = [[] for _ in range(n+1)]
 	for _ in range(m):
