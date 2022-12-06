@@ -1,43 +1,39 @@
-import collections
+from collections import deque
 import sys
-input = sys.stdin.readline
+input = lambda: sys.stdin.readline().rstrip()
 
-n, m = map(int, input().split())
+def bfs(Dx, Dy):
+	while q:
+		if forest[Dx][Dy] == 'S':
+			return dp[Dx][Dy]
+		x, y = q.popleft()
+		for i in range(4):
+			nx = x + dx[i]
+			ny = y + dy[i]
+			if 0 <= nx < r and 0 <= ny < c:
+				if forest[x][y] == 'S' and (forest[nx][ny] == '.' or forest[nx][ny] == 'D'):
+					forest[nx][ny] = 'S'
+					dp[nx][ny] = dp[x][y] + 1
+					q.append((nx, ny))
+				elif forest[x][y] == '*' and (forest[nx][ny] == '.' or forest[nx][ny] == 'S'):
+					forest[nx][ny] = '*'
+					q.append((nx, ny))
+	return "KAKTUS"
 
-graph = [list(input().strip()) for _ in range(n)]
-distance = [[0] *m for _ in range(n)]
-dx, dy = [-1, 1, 0, 0], [0, 0, -1, 1]
-queue = collections.deque()
-
-def bfs(Dx,Dy):
-    while queue:
-        x,y = queue.popleft()
-        if graph[Dx][Dy] == 'S':
-            return distance[Dx][Dy]
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
-            if 0 <= nx < n and 0 <= ny < m:
-                if (graph[nx][ny] == '.' or graph[nx][ny] == 'D') and graph[x][y] == 'S':
-                    graph[nx][ny] = 'S'
-                    distance[nx][ny] = distance[x][y] + 1
-                    queue.append((nx,ny))
-                elif (graph[nx][ny] =='.' or graph[nx][ny] =='S') and graph[x][y] == '*':
-                    graph[nx][ny] = '*'
-                    queue.append((nx,ny))
-    return "KAKTUS"
-
-
-for x in range(n):
-    for y in range(m):
-        if graph[x][y] == 'S':
-            queue.append((x,y))
-        elif graph[x][y] == 'D':
-            Dx,Dy = x,y
-
-for x in range(n):
-    for y in range(m):
-        if graph[x][y] == '*':
-            queue.append((x,y))
-
-print(bfs(Dx,Dy))
+if __name__ == '__main__':
+	r, c = map(int, input().split())
+	forest = [list(input()) for _ in range(r)]
+	dp = [[0] * c for _ in range(r)]
+	dx, dy = [1, 0, -1, 0], [0, 1, 0, -1]
+	q = deque()
+	for i in range(r):
+		for j in range(c):
+			if forest[i][j] == 'S':
+				q.append((i, j))
+			elif forest[i][j] == 'D':
+				Dx, Dy = i, j
+	for i in range(r):
+		for j in range(c):
+			if forest[i][j] == '*':
+				q.append((i, j))
+	print(bfs(Dx, Dy))
