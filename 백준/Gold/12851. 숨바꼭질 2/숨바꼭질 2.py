@@ -2,7 +2,7 @@ from collections import deque
 import sys
 input = lambda: sys.stdin.readline().rstrip()
 
-def bfs(s, e):
+def bfs(s):
 	q = deque([s])
 	dp[s][0] = 0;
 	dp[s][1] = 1;
@@ -20,6 +20,6 @@ def bfs(s, e):
 if __name__ == '__main__':
 	n, k = map(int, input().split())
 	dp = [[-1, 0] for _ in range(100001)]
-	bfs(n, k)
+	bfs(n)
 	print(dp[k][0])
 	print(dp[k][1])
