@@ -17,6 +17,7 @@ def bfs():
 					q.append((nx, ny))
 			else:
 				if visited[x][y] != -2:
+				# 다음 이동이 building을 벗어난다 == 현재 벽쪽에 위치한다 && q에서 pop된 요소는 벽일 수 없음
 					return visited[x][y] + 1
 	return "IMPOSSIBLE"
 
