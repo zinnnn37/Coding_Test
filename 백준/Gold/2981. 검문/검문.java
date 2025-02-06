@@ -3,6 +3,7 @@ import java.util.*;
 
 public class Main {
 	
+	private static StringBuilder	sb;
 	private static TreeSet<Integer>	tree;
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
@@ -11,7 +12,6 @@ public class Main {
 	
 	private static void sol() throws NumberFormatException, IOException {
 		BufferedReader	br = new BufferedReader(new InputStreamReader(System.in));
-		StringBuilder	sb = new StringBuilder();
 		
 		int		N = Integer.parseInt(br.readLine());
 		int[]	input = new int[N];
@@ -52,9 +52,13 @@ public class Main {
 	}
 	
 	private static void printTree() {
+		sb = new StringBuilder();
+
 		for (Integer i : tree) {
-			System.out.print(i + " ");
+			sb.append(i).append(" ");
 		}
+		
+		System.out.println(sb);
 	}
 
 }
