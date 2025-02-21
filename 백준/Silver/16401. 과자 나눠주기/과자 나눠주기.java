@@ -55,7 +55,6 @@ public class Main {
 				cnt += cookie / mid;
 			}
 
-			// N명에게 돌아가면 길이 키우기
 			if (cnt >= N) {
 				ans  = mid;
 				left = mid + 1;
