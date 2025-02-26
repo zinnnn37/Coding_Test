@@ -44,27 +44,18 @@ public class Solution {
 				continue;
 			}
 			
-			// check left
-			int leftDesc = 1;
-			for (int left = i-2; left >= 0; left--) {
-				if (mountains[left] >= mountains[left+1]) {
-					break;
-				}
-				leftDesc++;
+			int left = i-1;
+			while (left > 0 && mountains[left-1] < mountains[left]) {
+				left--;
 			}
 			
-			int rightDesc = 1;
-			int nxtIdx = i;
-			for (int right = i+2; right < N; right++) {
-				if (mountains[right-1] <= mountains[right]) {
-					break;
-				}
-				rightDesc++;
-				nxtIdx = right;
+			int right = i+1;
+			while (right < N-1 && mountains[right] > mountains[right+1]) {
+				right++;
 			}
 			
-			ans += leftDesc * rightDesc;
-			i = nxtIdx;
+			ans += (i - left) * (right - i);
+			i = right;
 		}
 	}
 
