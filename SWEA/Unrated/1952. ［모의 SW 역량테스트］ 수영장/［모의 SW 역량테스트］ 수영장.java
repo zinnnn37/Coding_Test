@@ -24,7 +24,7 @@ public class Solution {
 			init();
 			swimmingPool();
 			
-			sb.append('#').append(tc).append(' ').append(dp[12]).append('\n');
+			sb.append('#').append(tc).append(' ').append(Math.min(dp[12], cost[3])).append('\n');
 		}
 		System.out.println(sb);
 		br.close();
@@ -48,10 +48,7 @@ public class Solution {
 	
 	private static void swimmingPool() {
 		for (int i = 1; i < 13; i++) {
-			dp[i] = Math.min(
-						cost[3],
-						Math.min(dp[i-1] + cost[0] * months[i], dp[i-1] + cost[1])
-					);
+			dp[i] = Math.min(dp[i-1] + cost[0] * months[i], dp[i-1] + cost[1]);
 			
 			if (i >= 3) {
 				dp[i] = Math.min(dp[i], dp[i-3] + cost[2]); 
