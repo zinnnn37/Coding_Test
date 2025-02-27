@@ -27,78 +27,45 @@ public class Main {
 		M = Integer.parseInt(st.nextToken());
 		cnt = 0;
 		
-		input = new boolean[N][M];
-		for (int i = 0; i < N; i++) {
-			String s = br.readLine();
-			
-			for (int j = 0; j < M; j++) {
-				input[i][j] = s.charAt(j) == '1' ? true : false;
-			}
-		}
+		input = readMatrix();
+		output = readMatrix();
 		
-		output = new boolean[N][M];
+		br.close();
+	}
+	
+	private static boolean[][] readMatrix() throws IOException {
+		boolean[][] matrix = new boolean[N][M];
+		
 		for (int i = 0; i < N; i++) {
 			String s = br.readLine();
 
 			for (int j = 0; j < M; j++) {
-				output[i][j] = s.charAt(j) == '1' ? true : false;
+				matrix[i][j] = s.charAt(j) == '1';
 			}
 		}
 		
-		br.close();
+		return matrix;
 	}
 	
 	private static void sol() {
 		for (int i = 0; i < N-2; i++) {
 			for (int j = 0; j < M-2; j++) {
-				flipFlop(i, j);
+				if (input[i][j] != output[i][j]) {
+					flipFlop(i, j);
+					cnt++;
+				}
 			}
 		}
 		
-		if (!checkLastTwoLines()) {
-			System.out.println(-1);
-		} else {
-			System.out.println(cnt);
-		}
+		System.out.println(checkSame() ? cnt : -1);
 	}
 	
 	private static void flipFlop(int x, int y) {
-		if (input[x][y] != output[x][y]) {
-			cnt++;
-			for (int i = x; i < x + 3; i++) {
-				for (int j = y; j < y + 3; j++) {
-					input[i][j] = !input[i][j];
-				}
+		for (int i = x; i < x + 3; i++) {
+			for (int j = y; j < y + 3; j++) {
+				input[i][j] = !input[i][j];
 			}
 		}
-	}
-	
-	private static boolean checkLastTwoLines() {
-		if (N < 3 || M < 3) {
-			if (checkSame()) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-        for (int i = N-2; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (input[i][j] != output[i][j]) {
-					return false;
-				}
-			}
-		}
-		
-		for (int i = 0; i < N-2; i++) {
-			for (int j = M-2; j < M; j++) {
-				if (input[i][j] != output[i][j]) {
-					return false;
-				}
-			}
-		}
-		
-		return true;
 	}
 	
 	private static boolean checkSame() {
