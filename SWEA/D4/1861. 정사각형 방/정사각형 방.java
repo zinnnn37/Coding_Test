@@ -2,9 +2,6 @@ import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -16,10 +13,9 @@ public class Solution {
 	private static int N;
 	private static int num;
 	private static int cnt;
-	
-	private static int[] length;
-	
-	private static Map<Integer, Point> map;
+
+	private static int[]   length;
+	private static Point[] pos;
 	
 	public static void main(String[] args) throws IOException {
 		sol();
@@ -43,16 +39,15 @@ public class Solution {
 		num = 0;
 		cnt = 0;
 		
-		map = new HashMap<>();
-		for (int i = 0; i < N; i ++) {
+		pos = new Point[N * N + 1];
+		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < N; j++) {
 				int key = Integer.parseInt(st.nextToken());
 				
-				map.put(key, new Point(i, j));
+				pos[key] = new Point(i, j);
 			}
 		}
-		
 		length = new int[N * N + 1];
 	}
 	
@@ -64,14 +59,13 @@ public class Solution {
 			int tmp = 1;
 			int ckey = key;
 			
-			// 다음 수가 상하좌우에 있는지 확인
 			while (true) {
 				int nkey = ckey + 1;
 				
 				if (nkey > N * N) break ;
 				
-				Point cur = map.get(ckey);
-				Point nxt = map.get(nkey);
+				Point cur = pos[ckey];
+				Point nxt = pos[nkey];
 				
 				if (!(Math.abs(cur.x - nxt.x) + Math.abs(cur.y - nxt.y) == 1)) {
 					break;
