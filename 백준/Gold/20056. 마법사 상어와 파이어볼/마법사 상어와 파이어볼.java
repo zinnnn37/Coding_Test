@@ -49,7 +49,7 @@ public class Main {
 		K = Integer.parseInt(st.nextToken());
 
 		board     = new ArrayList[N][N];
-		fireBalls = new ArrayList<>();
+		fireBalls = new ArrayList<>(M);
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
 
@@ -82,7 +82,11 @@ public class Main {
 	private static void initBoard() {
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				board[i][j] = new ArrayList<>();
+				if (board[i][j] == null) {
+					board[i][j] = new ArrayList<>();
+				} else {
+					board[i][j].clear();
+				}
 			}
 		}
 	}
@@ -91,22 +95,12 @@ public class Main {
 		for (FireBall fb : fireBalls) {
 			// if N == 4 && speed == 5
 			// shark appears to move only 1 unit (5 % 4 = 1)
-			int nrow = fb.row + dx[fb.dir] * (fb.speed % N);
-			int ncol = fb.col + dy[fb.dir] * (fb.speed % N);
+			int mod  = fb.speed % N;
+			int nRow = (fb.row + dx[fb.dir] * mod + N) % N;
+			int nCol = (fb.col + dy[fb.dir] * mod + N) % N;
 
-			if (nrow < 0) {
-				nrow += N;
-			} else if (nrow >= N) {
-				nrow -= N;
-			}
-			if (ncol < 0) {
-				ncol += N;
-			} else if (ncol >= N) {
-				ncol -= N;
-			}
-
-			fb.row = nrow;
-			fb.col = ncol;
+			fb.row = nRow;
+			fb.col = nCol;
 			board[fb.row][fb.col].add(fb);
 		}
 	}
@@ -119,19 +113,19 @@ public class Main {
 				int mSum = 0;
 				int sSum = 0;
 
-				boolean even = false;
-				boolean odd  = false;
+				boolean allSameDir = true;
 
-				for (FireBall fb : board[i][j]) {
-					mSum += fb.mass;
-					sSum += fb.speed;
-
-					if (fb.dir % 2 == 0) {
-						even = true;
-					} else {
-						odd = true;
+				int firstDirOddEven = board[i][j].get(0).dir % 2;
+				for (int k = 0; k < board[i][j].size(); k++) {
+					if ((board[i][j].get(k).dir % 2) != firstDirOddEven) {
+						allSameDir = false;
 					}
+
+					mSum += board[i][j].get(k).mass;
+					sSum += board[i][j].get(k).speed;
 				}
+
+				int add    = allSameDir ? 0 : 1;
 				int nMass  = mSum / 5;
 				int nSpeed = sSum / board[i][j].size();
 
@@ -140,7 +134,6 @@ public class Main {
 				if (nMass <= 0) continue;
 
 				// true -> contains both even and odd vals
-				int add = even && odd ? 1 : 0;
 				for (int k = 0; k < 8; k += 2) {
 					board[i][j].add(new FireBall(i, j, nMass, nSpeed, k + add));
 				}
@@ -149,8 +142,7 @@ public class Main {
 	}
 
 	private static void updateFireBallsList() {
-		fireBalls = new ArrayList<>();
-
+		fireBalls.clear();
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
 				if (board[i][j].isEmpty()) continue;
