@@ -7,8 +7,8 @@ import java.util.StringTokenizer;
 
 public class Solution {
     
-    private static int dx[] = { 1, 1, -1, -1 };
-    private static int dy[] = { -1, 1, 1, -1 };
+    private static int[] dx = { 1, 1, -1, -1 };
+    private static int[] dy = { -1, 1, 1, -1 };
 
     private static BufferedReader  br = new BufferedReader(new InputStreamReader(System.in));
     private static StringBuilder   sb = new StringBuilder();
@@ -21,7 +21,7 @@ public class Solution {
     
     private static boolean[] types;
     
-    private static int[][]     cafe;
+    private static int[][] cafe;
     
     public static void main(String[] args) throws IOException {
         sol();
@@ -68,7 +68,7 @@ public class Solution {
     }
     
     private static void dfs(int i, int j, int cnt, int dir, int turn) {
-        for (int d = dir; d < 4; d++) {
+        for (int d = dir; d < 4 && d < dir+2; d++) {
             int nx = i + dx[d];
             int ny = j + dy[d];
 
