@@ -72,19 +72,18 @@ public class Solution {
             int nx = i + dx[d];
             int ny = j + dy[d];
 
-            if (OOB(nx, ny)) continue;
-            
-            int nextTurn = (d > dir) ? turn + 1 : turn;
-            
+            // [start.x+1][start.y+1]에서 방향 전환하는 경우 turn == 2
             if (nx == start.x && ny == start.y) {
-           		if (nextTurn == 3)
+           		if (turn >= 2)
            			ans = Math.max(ans, cnt);
             	return ;
             }
             
-            if (types[cafe[nx][ny]]) continue ;
+            if (OOB(nx, ny) || types[cafe[nx][ny]]) continue ;
             
             types[cafe[nx][ny]] = true;
+            
+            int nextTurn = (d > dir) ? turn + 1 : turn;
             
             dfs(nx, ny, cnt+1, d, nextTurn);
             
