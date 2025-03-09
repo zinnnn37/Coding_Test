@@ -105,7 +105,6 @@ public class Main {
 				adj = (targetJ + M + d) % M;
 				if (discs[disc][adj] == target) {
 					toRemove.add(new Point(disc, adj));
-					toRemove.add(new Point(disc, targetJ));
 				}
 
 				// vertical
@@ -114,7 +113,6 @@ public class Main {
 				adj = disc + d;
 				if (discs[adj][j] == target) {
 					toRemove.add(new Point(adj, j));
-					toRemove.add(new Point(disc, targetJ));
 				}
 			}
 		}
