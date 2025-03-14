@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    private static int[] dx = { 0, 1, 0, -1 };
-    private static int[] dy = { 1, 0, -1, 0 };
+    private static int[] dx = {0, 1, 0, -1};
+    private static int[] dy = {1, 0, -1, 0};
 
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static StringTokenizer st;
@@ -45,6 +46,7 @@ public class Main {
         cnt = 0;
         len = 1 << N;
 
+        copy = new int[len][len];
         matrix = new int[len][len];
         for (int i = 0; i < len; i++) {
             st = new StringTokenizer(br.readLine());
@@ -70,6 +72,7 @@ public class Main {
 
             rotate(pow);
             meltIce();
+            copyToOrigin(pow);
         }
         getAns();
     }
@@ -77,19 +80,11 @@ public class Main {
     private static void rotate(int pow) {
         for (int a = 0; a < len / pow; a++) {
             for (int b = 0; b < len / pow; b++) {
-                copy = new int[pow][pow];
-
                 // make copy
                 for (int i = 0; i < pow; i++) {
                     for (int j = 0; j < pow; j++) {
                         // rotate
-                        copy[j][pow - i - 1] = matrix[a * pow + i][b * pow + j];
-                    }
-                }
-                // apply on original mats
-                for (int i = 0; i < pow; i++) {
-                    for (int j = 0; j < pow; j++) {
-                        matrix[a * pow + i][b * pow + j] = copy[i][j];
+                        copy[a * pow + j][b * pow + pow - i - 1] = matrix[a * pow + i][b * pow + j];
                     }
                 }
             }
@@ -108,9 +103,9 @@ public class Main {
         }
         
         for (Point p : toDecrease) {
-        	if (matrix[p.x][p.y] <= 0) continue;
+        	if (copy[p.x][p.y] <= 0) continue;
 
-        	matrix[p.x][p.y]--;
+        	copy[p.x][p.y]--;
         	ans--;
         }
     }
@@ -126,11 +121,19 @@ public class Main {
                 continue;
             }
 
-            if (matrix[nx][ny] > 0) {
+            if (copy[nx][ny] > 0) {
                 cnt++;
             }
         }
         return cnt >= 3;
+    }
+    
+    private static void copyToOrigin(int pow) {
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < len; j++) {
+                matrix[i][j] = copy[i][j];
+            }
+        }
     }
 
     private static void getAns() {
@@ -142,6 +145,7 @@ public class Main {
         		cnt = Math.max(cnt, bfs(i, j));
         	}
         }
+        
         System.out.println(ans);
         System.out.println(cnt);
     }
