@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
@@ -17,10 +15,10 @@ public class Main {
     private static class TrieNode {
 
         boolean isEnd;
-        Map<Integer, TrieNode> child;
+        TrieNode[] child;
 
         public TrieNode() {
-            child = new HashMap<>();
+            child = new TrieNode[10];
             isEnd = false;
         }
     }
@@ -42,10 +40,11 @@ public class Main {
                 int digit = phone.charAt(i) - '0';
 
                 // if cur doesn't have child, add one
-                cur.child.putIfAbsent(digit, new TrieNode());
-
+                if (cur.child[digit] == null) {
+                    cur.child[digit] = new TrieNode();
+                }
                 // move to the child
-                cur = cur.child.get(digit);
+                cur = cur.child[digit];
 
                 if (cur.isEnd) {
                     return false;
@@ -53,11 +52,12 @@ public class Main {
             }
             cur.isEnd = true;
 
-            // if the phone number is a prefix of another phone number
-            if (cur.child.size() > 0) {
-                return false;
+            // if the phone number is a prefix
+            for (int i = 0; i < 10; i++) {
+                if (cur.child[i] != null) {
+                    return false;
+                }
             }
-
             return true;
         }
     }
