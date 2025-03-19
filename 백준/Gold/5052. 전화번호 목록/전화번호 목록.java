@@ -79,17 +79,20 @@ public class Main {
     }
 
     private static void sol() throws IOException {
-        boolean flag = true;
-
         for (int i = 0; i < N; i++) {
             String input = br.readLine();
 
             if (!trie.insert(input)) {
-                flag = false;
-                continue;
+                sb.append("NO\n");
+
+                for (int j = i + 1; j < N; j++) {
+                    br.readLine();
+                }
+
+                return;
             }
         }
-        sb.append(flag ? "YES\n" : "NO\n");
+        sb.append("YES\n");
     }
 
 }
