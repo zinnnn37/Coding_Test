@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,11 +8,14 @@ public class Main {
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static StringBuilder sb = new StringBuilder();
     private static StringTokenizer st;
+    
+    private static final int MAX_NUM = 10_000_000;
+    private static final int OFFSET = MAX_NUM;
 
     private static int N;
     private static int M;
 
-    private static Set<Integer> set;
+    private static boolean[] cards;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -25,9 +26,11 @@ public class Main {
         N = Integer.parseInt(br.readLine());
         st = new StringTokenizer(br.readLine());
 
-        set = new HashSet<>();
+        cards = new boolean[2 * MAX_NUM + 1];
         for (int i = 0; i < N; i++) {
-            set.add(Integer.parseInt(st.nextToken()));
+        	int idx = Integer.parseInt(st.nextToken());
+        	
+        	cards[idx + OFFSET] = true;
         }
     }
 
@@ -38,7 +41,7 @@ public class Main {
         for (int i = 0; i < M; i++) {
             int target = Integer.parseInt(st.nextToken());
 
-            sb.append(set.contains(target) ? "1 " : "0 ");
+            sb.append(cards[target + OFFSET] ? "1 " : "0 ");
         }
         System.out.println(sb);
     }
