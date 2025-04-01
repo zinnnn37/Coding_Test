@@ -13,6 +13,7 @@ public class Main {
     private static final int INF = Integer.MAX_VALUE;
 
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static StringBuilder sb = new StringBuilder();
     private static StringTokenizer st;
 
     private static int V; // vertex
@@ -20,7 +21,6 @@ public class Main {
     private static int S; // start node
 
     private static int[] dist;
-    private static boolean[] visited;
 
     private static Queue<Node> q;
     private static List<Node>[] graph;
@@ -65,7 +65,6 @@ public class Main {
         dist = new int[V + 1];
         Arrays.fill(dist, INF);
 
-        visited = new boolean[V + 1];
         graph = new ArrayList[V + 1];
         for (int i = 1; i <= V; i++) {
             graph[i] = new ArrayList<>();
@@ -89,17 +88,13 @@ public class Main {
 
         while (!q.isEmpty()) {
             Node cur = q.poll();
-            
-            if (visited[cur.to]) continue;
-            
-            visited[cur.to] = true;
 
             if (cur.weight > dist[cur.to]) {
                 continue;
             }
 
             for (Node nxt : graph[cur.to]) {
-                if (visited[nxt.to] || dist[nxt.to] <= dist[cur.to] + nxt.weight) {
+                if (dist[nxt.to] <= dist[cur.to] + nxt.weight) {
                     continue;
                 }
 
@@ -107,10 +102,11 @@ public class Main {
                 q.add(new Node(nxt.to, dist[nxt.to]));
             }
         }
-		
+
         for (int i = 1; i <= V; i++) {
-            System.out.println(dist[i] == INF ? "INF" : dist[i]);
+            sb.append(dist[i] == INF ? "INF\n" : dist[i] + "\n");
         }
+        System.out.println(sb);
     }
 
 }
