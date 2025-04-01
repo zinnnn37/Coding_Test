@@ -20,6 +20,7 @@ public class Main {
     private static int S; // start node
 
     private static int[] dist;
+    private static boolean[] visited;
 
     private static Queue<Node> q;
     private static List<Node>[] graph;
@@ -33,6 +34,7 @@ public class Main {
     }
 
     private static class Node implements Comparable<Node> {
+
         int to;
         int weight;
 
@@ -45,6 +47,7 @@ public class Main {
         public int compareTo(Node o) {
             return Integer.compare(this.weight, o.weight);
         }
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -62,6 +65,7 @@ public class Main {
         dist = new int[V + 1];
         Arrays.fill(dist, INF);
 
+        visited = new boolean[V + 1];
         graph = new ArrayList[V + 1];
         for (int i = 1; i <= V; i++) {
             graph[i] = new ArrayList<>();
@@ -85,13 +89,17 @@ public class Main {
 
         while (!q.isEmpty()) {
             Node cur = q.poll();
+            
+            if (visited[cur.to]) continue;
+            
+            visited[cur.to] = true;
 
             if (cur.weight > dist[cur.to]) {
                 continue;
             }
 
             for (Node nxt : graph[cur.to]) {
-                if (dist[nxt.to] <= dist[cur.to] + nxt.weight) {
+                if (visited[nxt.to] || dist[nxt.to] <= dist[cur.to] + nxt.weight) {
                     continue;
                 }
 
