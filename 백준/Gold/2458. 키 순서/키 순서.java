@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,15 +10,9 @@ public class Main {
 
     private static int N;
     private static int M;
+    private static int ans;
 
-    private static int[] asc;
-    private static int[] desc;
-
-    private static boolean[] aVisited;
-    private static boolean[] dVisited;
-
-    private static List<Integer>[] aGraph; // asc
-    private static List<Integer>[] dGraph; // desc
+    private static boolean[][] connected;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -33,87 +24,42 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        ans = 0;
 
-        aGraph = new ArrayList[N];
-        dGraph = new ArrayList[N];
-        for (int i = 0; i < N; i++) {
-            aGraph[i] = new ArrayList<>();
-            dGraph[i] = new ArrayList<>();
-        }
-
-        aVisited = new boolean[N];
-        dVisited = new boolean[N];
-
+        connected = new boolean[N][N];
         while (M-- > 0) {
             st = new StringTokenizer(br.readLine());
 
             int a = Integer.parseInt(st.nextToken()) - 1;
             int b = Integer.parseInt(st.nextToken()) - 1;
 
-            aGraph[a].add(b);
-            dGraph[b].add(a);
+            connected[a][b] = true;
         }
-
-        asc = new int[N];
-        desc = new int[N];
-        Arrays.fill(asc, -1);
-        Arrays.fill(desc, -1);
     }
 
     private static void sol() {
-        setDegree();
-
-        int ans = 0;
-        for (int i = 0; i < N; i++) {
-            if (asc[i] + desc[i] == N) {
-                ans++;
+        // Floyd-Warshall -> check connection
+        for (int k = 0; k < N; k++) {
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (connected[i][k] && connected[k][j])
+                        connected[i][j] = true;
+                }
             }
         }
 
+        for (int i = 0; i < N; i++) {
+            // 현 노드에서 도달할 수 있는 다른 노드의 수
+            int cnt = 0;
+
+            for (int j = 0; j < N; j++) {
+                if (connected[i][j] || connected[j][i])
+                    cnt++;
+            }
+
+            if (cnt == N - 1)
+                ans++;
+        }
         System.out.println(ans);
     }
-
-    private static void setDegree() {
-        for (int i = 0; i < N; i++) {
-            dfsAsc(i);
-            dfsDesc(i);
-        }
-    }
-
-    private static void dfsAsc(int i) {
-        Arrays.fill(aVisited, false);
-        asc[i] = countAsc(i) - 1; // 본인 제외(dfsDesc에서 적용)
-    }
-
-    private static int countAsc(int node) {
-        aVisited[node] = true;
-        int count = 1; // 자기 자신 포함
-
-        for (int next : aGraph[node]) {
-            if (!aVisited[next]) {
-                count += countAsc(next);
-            }
-        }
-
-        return count;
-    }
-
-    private static void dfsDesc(int i) {
-        Arrays.fill(dVisited, false);
-        desc[i] = countDesc(i);
-    }
-
-    private static int countDesc(int node) {
-        dVisited[node] = true;
-        int count = 1; // 자기 자신 포함
-
-        for (int next : dGraph[node]) {
-            if (!dVisited[next]) {
-                count += countDesc(next);
-            }
-        }
-
-        return count;
-    }
-
 }
