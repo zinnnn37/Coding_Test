@@ -11,8 +11,8 @@ public class Main {
 	private static int N;
 	private static int K;
 
+	private static int[]   knapsack;
 	private static int[][] obj;
-	private static int[][] knapsack;
 
 	public static void main(String[] args) throws IOException {
 		init();
@@ -33,20 +33,16 @@ public class Main {
 			obj[i][1] = Integer.parseInt(st.nextToken());
 		}
 
-		knapsack = new int[N + 1][K + 1];
+		knapsack = new int[K + 1];
 	}
 
 	private static void sol() {
 		for (int i = 1; i <= N; i++) {
-			for (int j = 1; j <= K; j++) {
-				if (j >= obj[i][0]) {
-					knapsack[i][j] = Math.max(knapsack[i - 1][j], knapsack[i - 1][j - obj[i][0]] + obj[i][1]);
-				} else {
-					knapsack[i][j] = knapsack[i - 1][j];
-				}
+			for (int j = K; j >= obj[i][0]; j--) {
+				knapsack[j] = Math.max(knapsack[j], knapsack[j - obj[i][0]] + obj[i][1]);
 			}
 		}
-		System.out.println(knapsack[N][K]);
+		System.out.println(knapsack[K]);
 	}
 
 }
