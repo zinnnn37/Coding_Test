@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         init();
-        System.out.println(sol(0, 0));
+        sol();
     }
 
     private static void init() throws IOException {
@@ -34,36 +34,32 @@ public class Main {
         }
 
         bitCnt = (1 << N) - 1; // 모든 일 진행
-        dp = new int[N][bitCnt + 1];
-        for (int i = 0; i < N; i++) {
-            Arrays.fill(dp[i], -1);
+        dp = new int[N + 1][bitCnt + 1];
+        for (int i = 0; i <= N; i++) {
+            Arrays.fill(dp[i], INF);
         }
+        dp[0][0] = 0;
     }
 
-    private static int sol(int person, int set) {
-        // all asigned
-        if (person == N) {
-            return 0;
-        }
+    private static void sol() {
+        for (int p = 1; p <= N; p++) {
+            for (int subset = 0; subset <= bitCnt; subset++) {
+                if (dp[p - 1][subset] == INF) {
+                    continue;
+                }
+                
+                for (int job = 0; job < N; job++) {
+                    if ((subset & (1 << job)) != 0) {
+                        continue;
+                    }
 
-        // alr calculated
-        if (dp[person][set] != -1) {
-            return dp[person][set];
-        }
+                    int nextSet = subset | (1 << job);
 
-        int min = INF;
-
-        for (int job = 0; job < N; job++) {
-            // alr working
-            if ((set & (1 << job)) != 0) {
-                continue;
+                    dp[p][nextSet] = Math.min(dp[p][nextSet], dp[p-1][subset] + works[p-1][job]);
+                }
             }
-
-            int tmp = sol(person + 1, set | (1 << job)) + works[person][job];
-            min = Math.min(tmp, min);
         }
-
-        return dp[person][set] = min;
+        System.out.println(dp[N][bitCnt]);
     }
 
 }
