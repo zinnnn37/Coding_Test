@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -15,21 +15,23 @@ public class Main {
 
     private static int[] home;
     private static int[] festival;
-    private static boolean[] visited;
-
     private static int[][] store;
+
+    private static boolean[] visited;
+    private static Queue<int[]> q;
 
     public static void main(String[] args) throws IOException {
         int T = Integer.parseInt(br.readLine());
 
         while (T-- > 0) {
+            init();
             sol();
         }
 
         System.out.print(sb);
     }
 
-    private static void sol() throws IOException {
+    private static void init() throws IOException {
         n = Integer.parseInt(br.readLine());
 
         st = new StringTokenizer(br.readLine());
@@ -52,12 +54,10 @@ public class Main {
         festival[1] = Integer.parseInt(st.nextToken());
 
         visited = new boolean[n + 1];
-
-        bfs();
+        q = new ArrayDeque<>();
     }
 
-    private static void bfs() {
-        Queue<int[]> q = new LinkedList<>();
+    private static void sol() {
         q.offer(new int[]{home[0], home[1]});
 
         while (!q.isEmpty()) {
