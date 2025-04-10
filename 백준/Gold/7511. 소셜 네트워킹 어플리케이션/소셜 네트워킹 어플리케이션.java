@@ -70,7 +70,7 @@ public class Main {
         if (parents[a] == a) {
             return a;
         }
-        return find(parents[a]);
+        return parents[a] = find(parents[a]);
     }
 
 }
