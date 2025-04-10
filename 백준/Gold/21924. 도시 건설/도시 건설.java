@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -17,17 +15,18 @@ public class Main {
     private static long total;
     private static long ans;
 
-    private static boolean visited[];
+    private static int[] parents;
 
     private static Queue<Node> pq;
-    private static List<Node>[] graph;
 
     private static class Node implements Comparable<Node> {
 
+        int from;
         int to;
         int dist;
 
-        public Node(int to, int dist) {
+        public Node(int from, int to, int dist) {
+            this.from = from;
             this.to = to;
             this.dist = dist;
         }
@@ -51,11 +50,12 @@ public class Main {
         total = 0;
         ans = 0;
 
-        graph = new ArrayList[N + 1];
+        parents = new int[N + 1];
         for (int i = 1; i <= N; i++) {
-            graph[i] = new ArrayList<>();
+            parents[i] = i;
         }
 
+        pq = new PriorityQueue<>();
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
 
@@ -63,44 +63,56 @@ public class Main {
             int to = Integer.parseInt(st.nextToken());
             int dist = Integer.parseInt(st.nextToken());
 
-            graph[from].add(new Node(to, dist));
-            graph[to].add(new Node(from, dist));
+            pq.offer(new Node(from, to, dist));
 
             total += dist;
         }
-
-        visited = new boolean[N + 1];
-        pq = new PriorityQueue<>();
     }
 
     private static void sol() {
-        pq.offer(new Node(1, 0));
+        pq.offer(new Node(1, 1, 0));
 
         while (!pq.isEmpty()) {
             Node cur = pq.poll();
 
-            if (visited[cur.to]) {
+            if (find(cur.from) == find(cur.to)) {
                 continue;
             }
 
-            visited[cur.to] = true;
+            union(cur.from, cur.to);
             ans += cur.dist;
-
-            for (Node nxt : graph[cur.to]) {
-                if (visited[nxt.to]) {
-                    continue;
-                }
-                pq.offer(nxt);
-            }
         }
 
-        for (int i = 1; i <= N; i++) {
-            if (!visited[i]) {
-                System.out.println(-1);
-                System.exit(0);
-            }
+        System.out.println(checkRoute() ? total - ans : -1);
+    }
+
+    private static void union(int a, int b) {
+        int rootA = find(a);
+        int rootB = find(b);
+
+        if (rootA < rootB) {
+            parents[rootB] = rootA;
+        } else {
+            parents[rootA] = rootB;
         }
-        System.out.println(total - ans);
+    }
+
+    private static int find(int a) {
+        if (parents[a] == a) {
+            return a;
+        }
+
+        return parents[a] = find(parents[a]);
+    }
+
+    private static boolean checkRoute() {
+        int prev = find(1);
+        
+        for (int i = 2; i <= N; i++) {
+            if (find(i) != prev)
+                return false;
+        }
+        return true;
     }
 
 }
