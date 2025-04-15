@@ -23,8 +23,6 @@ public class Solution {
 
         for (int tc = 1; tc <= T; tc++) {
             sb.append("#").append(tc).append(" ");
-
-            init();
             sol();
         }
         System.out.println(sb);
@@ -41,14 +39,12 @@ public class Solution {
         }
     }
 
-    private static void init() throws IOException {
+    private static void sol() throws IOException {
         st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
         R = Integer.parseInt(st.nextToken());
-    }
 
-    private static void sol() {
         long numerator = fact[N];
         long denominator = (fact[R] * fact[N - R]) % MOD;
 
