@@ -9,9 +9,13 @@ public class Main {
     private static StringTokenizer st;
 
     private static int N;
-    private static int[] nums;     // Input array
-    private static int[] dp;       // dp[i] = length of LIS ending at i
-    private static int[] p;        // p[i] = previous index in LIS
+    private static int max;
+    private static int start;
+
+    private static int[] nums;     // input sequence
+    private static int[] lis;      // array to store LIS values
+    private static int[] idx;      // array to store index information
+    private static int lisSize;    // current size of LIS
 
     public static void main(String[] args) throws IOException {
         init();
@@ -20,91 +24,77 @@ public class Main {
 
     private static void init() throws IOException {
         N = Integer.parseInt(br.readLine());
-
+        max = 1;
+        start = 0;
+        lisSize = 1;
+        
+        idx = new int[N];
         nums = new int[N];
-        dp = new int[N];
-        p = new int[N];
+        lis = new int[N + 1];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             nums[i] = Integer.parseInt(st.nextToken());
-            dp[i] = 1;        // Initialize dp values to 1
-            p[i] = -1;        // Initialize previous index to -1
         }
+
+        lis[0] = Integer.MIN_VALUE;
     }
 
     private static void sol() {
-        int[] lis = new int[N];    // Stores indices of the LIS
-        int length = 0;
-
         for (int i = 0; i < N; i++) {
-            // Find position in the LIS array using binary search
-            int pos = binarySearch(lis, length, nums[i]);
+            if (lis[lisSize - 1] < nums[i]) {
+                lis[lisSize] = nums[i];
 
-            // Add current element to the LIS
-            lis[pos] = i;
+                idx[i] = lisSize;
+                lisSize++;
 
-            // Update previous index
-            if (pos > 0) {
-                p[i] = lis[pos - 1];
-            }
-
-            // Update dp value
-            dp[i] = pos + 1;
-
-            // Update maximum length if needed
-            if (pos == length) {
-                length++;
-            }
-        }
-
-        // Find the index with maximum LIS length
-        int maxLen = 0;
-        int lastIndex = -1;
-        for (int i = 0; i < N; i++) {
-            if (dp[i] > maxLen) {
-                maxLen = dp[i];
-                lastIndex = i;
-            }
-        }
-
-        printAns(lastIndex, maxLen);
-    }
-
-    private static int binarySearch(int[] lis, int length, int target) {
-        int left = 0;
-        int right = length;
-
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-
-            if (nums[lis[mid]] < target) {
-                left = mid + 1;
+                if (lisSize - 1 > max) {
+                    start = i;
+                    max = lisSize - 1;
+                }
             } else {
-                right = mid;
+                int target = binarySearch(0, lisSize - 1, nums[i]);
+
+                lis[target] = nums[i];
+                idx[i] = target;
+
+                if (target > max) {
+                    start = i;
+                    max = target;
+                }
+            }
+        }
+        printAns();
+    }
+
+    private static int binarySearch(int s, int e, int target) {
+        while (s < e) {
+            int mid = (s + e) / 2;
+
+            if (lis[mid] < target) {
+                s = mid + 1;
+            } else {
+                e = mid;
+            }
+        }
+        return e;
+    }
+
+    private static void printAns() {
+        int[] ans = new int[max];
+        int currentMax = max;
+
+        System.out.println(max);
+
+        // Reconstruct the LIS by tracing back
+        for (int i = start; i >= 0; i--) {
+            if (idx[i] == currentMax) {
+                ans[--currentMax] = nums[i];
             }
         }
 
-        return left;
-    }
-
-    private static void printAns(int lastIndex, int maxLen) {
-        // First print the length
-        System.out.println(maxLen);
-
-        // Reconstruct the sequence
-        int[] result = new int[maxLen];
-        int curr = lastIndex;
-        int idx = maxLen - 1;
-
-        while (curr != -1) {
-            result[idx--] = nums[curr];
-            curr = p[curr];
-        }
-
-        // Print the sequence
-        for (int val : result) {
-            System.out.print(val + " ");
+        for (int a : ans) {
+            System.out.print(a + " ");
         }
     }
 }
