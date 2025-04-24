@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,24 +9,9 @@ public class Main {
     private static StringTokenizer st;
 
     private static int N;
-    private static int max;
-    private static int start;
-
-    private static int[] nums;
-    private static Node[] idx;
-
-    private static List<Integer> res; // save index
-
-    private static class Node {
-
-        int idx;
-        int val;
-
-        Node(int idx, int val) {
-            this.idx = idx;
-            this.val = val;
-        }
-    }
+    private static int[] nums;     // Input array
+    private static int[] dp;       // dp[i] = length of LIS ending at i
+    private static int[] p;        // p[i] = previous index in LIS
 
     public static void main(String[] args) throws IOException {
         init();
@@ -37,75 +20,91 @@ public class Main {
 
     private static void init() throws IOException {
         N = Integer.parseInt(br.readLine());
-        max = 1;
-        start = 0;
 
-        idx = new Node[N];
         nums = new int[N];
+        dp = new int[N];
+        p = new int[N];
+
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             nums[i] = Integer.parseInt(st.nextToken());
+            dp[i] = 1;        // Initialize dp values to 1
+            p[i] = -1;        // Initialize previous index to -1
         }
-        res = new ArrayList<>();
     }
 
     private static void sol() {
-        res.add(Integer.MIN_VALUE);
+        int[] lis = new int[N];    // Stores indices of the LIS
+        int length = 0;
+
         for (int i = 0; i < N; i++) {
-            // 부분수열 중 제일 큰 수
-            if (res.get(res.size() - 1) < nums[i]) {
-                res.add(nums[i]);
+            // Find position in the LIS array using binary search
+            int pos = binarySearch(lis, length, nums[i]);
 
-                // 해당 숫자가 들어갈 수 있는 인덱스와 함께 값 저장
-                idx[i] = new Node(res.size() - 1, nums[i]);
+            // Add current element to the LIS
+            lis[pos] = i;
 
-                if (res.size() - 1 > max) {
-                    start = i;
-                    max = res.size() - 1;
-                }
+            // Update previous index
+            if (pos > 0) {
+                p[i] = lis[pos - 1];
+            }
+
+            // Update dp value
+            dp[i] = pos + 1;
+
+            // Update maximum length if needed
+            if (pos == length) {
+                length++;
+            }
+        }
+
+        // Find the index with maximum LIS length
+        int maxLen = 0;
+        int lastIndex = -1;
+        for (int i = 0; i < N; i++) {
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+                lastIndex = i;
+            }
+        }
+
+        printAns(lastIndex, maxLen);
+    }
+
+    private static int binarySearch(int[] lis, int length, int target) {
+        int left = 0;
+        int right = length;
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[lis[mid]] < target) {
+                left = mid + 1;
             } else {
-                // 중간에 끼워넣는 경우
-                int target = binarySearch(0, res.size() - 1, nums[i]);
-
-                res.set(target, nums[i]);
-
-                idx[i] = new Node(target, nums[i]);
-
-                if (target > max) {
-                    start = i;
-                    max = target;
-                }
-            }
-        }
-        printAns();
-    }
-
-    private static int binarySearch(int s, int e, int target) {
-        while (s < e) {
-            int mid = (s + e) / 2;
-
-            if (res.get(mid) < target) {
-                s = mid + 1;
-            } else {
-                e = mid;
-            }
-        }
-        return e;
-    }
-
-    private static void printAns() {
-        int[] ans = new int[max];
-
-        System.out.println(max);
-        for (int i = start; i >= 0; i--) {
-            if (idx[i].idx == max) {
-                ans[--max] = idx[i].val;
+                right = mid;
             }
         }
 
-        for (int a : ans) {
-            System.out.print(a + " ");
-        }
+        return left;
     }
 
+    private static void printAns(int lastIndex, int maxLen) {
+        // First print the length
+        System.out.println(maxLen);
+
+        // Reconstruct the sequence
+        int[] result = new int[maxLen];
+        int curr = lastIndex;
+        int idx = maxLen - 1;
+
+        while (curr != -1) {
+            result[idx--] = nums[curr];
+            curr = p[curr];
+        }
+
+        // Print the sequence
+        for (int val : result) {
+            System.out.print(val + " ");
+        }
+    }
 }
