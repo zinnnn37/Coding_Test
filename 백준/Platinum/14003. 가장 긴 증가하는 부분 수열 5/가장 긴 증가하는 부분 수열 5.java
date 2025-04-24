@@ -9,13 +9,11 @@ public class Main {
     private static StringTokenizer st;
 
     private static int N;
-    private static int max;
-    private static int start;
+    private static int[] nums;
 
-    private static int[] nums;     // input sequence
-    private static int[] lis;      // array to store LIS values
-    private static int[] idx;      // array to store index information
-    private static int lisSize;    // current size of LIS
+    private static int[] dp;         // LIS 값을 저장하는 배열
+    private static int[] lisIndex;   // 각 수가 dp의 몇 번째 위치에 들어갔는지 기록
+    private static int dpLength;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -24,77 +22,64 @@ public class Main {
 
     private static void init() throws IOException {
         N = Integer.parseInt(br.readLine());
-        max = 1;
-        start = 0;
-        lisSize = 1;
-        
-        idx = new int[N];
         nums = new int[N];
-        lis = new int[N + 1];
+        lisIndex = new int[N];
+        dp = new int[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             nums[i] = Integer.parseInt(st.nextToken());
         }
-
-        lis[0] = Integer.MIN_VALUE;
     }
 
     private static void sol() {
-        for (int i = 0; i < N; i++) {
-            if (lis[lisSize - 1] < nums[i]) {
-                lis[lisSize] = nums[i];
+        dp[0] = nums[0];
+        lisIndex[0] = 0;
+        dpLength = 1;
 
-                idx[i] = lisSize;
-                lisSize++;
-
-                if (lisSize - 1 > max) {
-                    start = i;
-                    max = lisSize - 1;
-                }
+        for (int i = 1; i < N; i++) {
+            if (nums[i] > dp[dpLength - 1]) {
+                dp[dpLength] = nums[i];
+                lisIndex[i] = dpLength;
+                dpLength++;
             } else {
-                int target = binarySearch(0, lisSize - 1, nums[i]);
-
-                lis[target] = nums[i];
-                idx[i] = target;
-
-                if (target > max) {
-                    start = i;
-                    max = target;
-                }
+                int idx = lowerBound(0, dpLength, nums[i]);
+                dp[idx] = nums[i];
+                lisIndex[i] = idx;
             }
         }
+
         printAns();
     }
 
-    private static int binarySearch(int s, int e, int target) {
-        while (s < e) {
-            int mid = (s + e) / 2;
-
-            if (lis[mid] < target) {
-                s = mid + 1;
+    private static int lowerBound(int left, int right, int target) {
+        while (left < right) {
+            int mid = (left + right) / 2;
+            if (dp[mid] < target) {
+                left = mid + 1;
             } else {
-                e = mid;
+                right = mid;
             }
         }
-        return e;
+        return right;
     }
 
     private static void printAns() {
-        int[] ans = new int[max];
-        int currentMax = max;
+        int[] answer = new int[dpLength];
+        int len = dpLength - 1;
 
-        System.out.println(max);
-
-        // Reconstruct the LIS by tracing back
-        for (int i = start; i >= 0; i--) {
-            if (idx[i] == currentMax) {
-                ans[--currentMax] = nums[i];
+        for (int i = N - 1; i >= 0; i--) {
+            if (lisIndex[i] == len) {
+                answer[len--] = nums[i];
             }
         }
 
-        for (int a : ans) {
-            System.out.print(a + " ");
+        StringBuilder sb = new StringBuilder();
+        sb.append(dpLength).append("\n");
+        for (int x : answer) {
+            sb.append(x).append(" ");
         }
+
+        System.out.println(sb);
     }
 }
