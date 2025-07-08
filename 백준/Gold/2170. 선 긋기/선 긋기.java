@@ -24,11 +24,18 @@ public class Main {
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
 
-            lines[i][0] = Integer.parseInt(st.nextToken());
-            lines[i][1] = Integer.parseInt(st.nextToken());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
+
+            if (x <= y) {
+                lines[i][0] = x;
+                lines[i][1] = y;
+            } else {
+                lines[i][0] = y;
+                lines[i][1] = x;
+            }
         }
 
-        Arrays.stream(lines).forEach(Arrays::sort);
         Arrays.sort(lines, (a, b) -> Integer.compare(a[0], b[0]));
     }
 
@@ -37,9 +44,11 @@ public class Main {
         int end = lines[0][1];
 
         for (int i = 1; i < N; i++) {
-            if (start <= lines[i][0] && lines[i][0] <= end && lines[i][1] > end) {
-                end = lines[i][1];
+            if (lines[i][0] <= end) {
+                // 포함 혹은 일부 포함
+                end = Math.max(end, lines[i][1]);
             } else if (lines[i][0] > end) {
+                // 새로운 라인
                 ans += (end - start);
 
                 start = lines[i][0];
