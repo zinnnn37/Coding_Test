@@ -23,13 +23,6 @@ public class Main {
 		M = Integer.parseInt(br.readLine());
 
 		mat = new int[N + 1][N + 1];
-		for (int i = 0; i < N + 1; i++) {
-			for (int j = 0; j < N + 1; j++) {
-				if (i == j) {
-					mat[i][j] = 9;
-				}
-			}
-		}
 
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -61,7 +54,7 @@ public class Main {
 		for (int i = 1; i < N + 1; i++) {
 			int cnt = 0;
 			for (int j = 1; j < N + 1; j++) {
-				if (mat[i][j] == 0) {
+				if (i != j && mat[i][j] == 0) {
 					cnt++;
 				}
 			}
