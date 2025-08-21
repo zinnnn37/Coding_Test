@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
 
 public class Main {
 
@@ -23,9 +22,6 @@ public class Main {
 		width  = height * 2 - 1;
 
 		mat = new char[height][width];
-		for (int i = 0; i < height; i++) {
-			Arrays.fill(mat[i], ' ');
-		}
 	}
 
 	private static void sol() throws IOException {
@@ -61,20 +57,25 @@ public class Main {
 		}
 	}
 
-    private static void printMat() throws IOException {
+	private static void printMat() throws IOException {
 		for (char[] chars : mat) {
-			StringBuilder sb = new StringBuilder();
-			for (char c : chars) {
-				if (c == '*') {
-					sb.append('*');
-				} else {
-					sb.append(' ');
+			// 각 줄에서 마지막 '*'의 위치 찾기
+			int lastStar = -1;
+			for (int i = chars.length - 1; i >= 0; i--) {
+				if (chars[i] == '*') {
+					lastStar = i;
+					break;
 				}
 			}
 
-			// 오른쪽 공백 제거
-			String line = sb.toString().replaceAll(" +$", "");
-			bw.write(line);
+			// 마지막 별까지만 출력
+			for (int i = 0; i <= lastStar; i++) {
+				if (chars[i] == '*') {
+					bw.write('*');
+				} else {
+					bw.write(' ');
+				}
+			}
 			bw.write("\n");
 		}
 		bw.flush();
