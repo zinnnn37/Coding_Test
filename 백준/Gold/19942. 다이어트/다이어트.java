@@ -6,24 +6,21 @@ import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
 public class Main {
-
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     private static StringTokenizer st;
 
-    private static int N;
-    private static int mp;
-    private static int mf;
-    private static int ms;
-    private static int mv;
-    private static int min;
-    private static String res;
+    private static int N, mp, mf, ms, mv;
+    private static int maxMask;
+    private static int minCost;
+    private static String bestResult;
 
     private static int[][] ingre;
 
     public static void main(String[] args) throws IOException {
         init();
         sol();
+        printAns();
     }
 
     private static void init() throws IOException {
@@ -35,8 +32,8 @@ public class Main {
         ms = Integer.parseInt(st.nextToken());
         mv = Integer.parseInt(st.nextToken());
 
-        res = "res"; // 사전 순 확인 위함
-        min = Integer.MAX_VALUE;
+        minCost = Integer.MAX_VALUE;
+        bestResult = null;
 
         ingre = new int[N][5];
         for (int i = 0; i < N; i++) {
@@ -44,55 +41,56 @@ public class Main {
 
             ingre[i][0] = Integer.parseInt(st.nextToken()); // p
             ingre[i][1] = Integer.parseInt(st.nextToken()); // f
-            ingre[i][2] = Integer.parseInt(st.nextToken()); // c
+            ingre[i][2] = Integer.parseInt(st.nextToken()); // s
             ingre[i][3] = Integer.parseInt(st.nextToken()); // v
             ingre[i][4] = Integer.parseInt(st.nextToken()); // cost
         }
     }
 
-    private static void sol() throws IOException {
-        for (int i = 0; i < (1 << N); i++) {
+    private static void sol() {
+        maxMask = (1 << N);
+
+        for (int mask = 1; mask < maxMask; mask++) {
+            int sp = 0, sf = 0, ss = 0, sv = 0, sc = 0;
             StringBuilder sb = new StringBuilder();
 
-            int sp = 0;
-            int sf = 0;
-            int ss = 0;
-            int sv = 0;
-            int sc = 0;
-
-            for (int j = 0; j < N; j++) {
-                // contains
-                if ((i & (1 << j)) != 0) {
-                    sp += ingre[j][0];
-                    sf += ingre[j][1];
-                    ss += ingre[j][2];
-                    sv += ingre[j][3];
-                    sc += ingre[j][4];
-
-                    sb.append(j + 1).append(" ");
+            for (int i = 0, bit = 1; i < N; i++, bit <<= 1) {
+                // 포함되는 재료
+                if ((mask & bit) != 0) {
+                    sp += ingre[i][0];
+                    sf += ingre[i][1];
+                    ss += ingre[i][2];
+                    sv += ingre[i][3];
+                    sc += ingre[i][4];
+                    sb.append(i + 1).append(" ");
                 }
             }
 
-            if (mp <= sp && mf <= sf && ms <= ss && mv <= sv) {
-                if (min > sc) {
-                    min = sc;
-                    res = sb.toString();
-                } else if (min == sc) {
-                    if (res.compareTo(sb.toString()) > 0) {
-                        res = sb.toString();
+            if (sp >= mp && sf >= mf && ss >= ms && sv >= mv) {
+                String currentResult = sb.toString();
+
+                if (sc < minCost) {
+                    minCost = sc;
+                    bestResult = currentResult;
+                } else if (sc == minCost) {
+                    if (bestResult == null || currentResult.compareTo(bestResult) < 0) {
+                        bestResult = currentResult;
                     }
                 }
             }
         }
+    }
 
-        if (res.compareTo("res") == 0) {
+    private static void printAns() throws IOException {
+        if (bestResult == null) {
             bw.write("-1");
         } else {
-            bw.write(min + "\n" + res);
+            bw.write(minCost + "\n");
+            bw.write(bestResult);
         }
+
         bw.flush();
         bw.close();
         br.close();
     }
-
 }
