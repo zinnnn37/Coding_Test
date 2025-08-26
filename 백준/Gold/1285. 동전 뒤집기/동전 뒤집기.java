@@ -11,7 +11,7 @@ public class Main {
 
     private static int N;
     private static int ans;
-    private static boolean[][] coins;
+    private static int[] coins;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -22,11 +22,13 @@ public class Main {
         N = Integer.parseInt(br.readLine());
         ans = Integer.MAX_VALUE;
 
-        coins = new boolean[N][N];
+        coins = new int[N];
         for (int i = 0; i < N; i++) {
             String s = br.readLine();
             for (int j = 0; j < N; j++) {
-                coins[i][j] = s.charAt(j) == 'T'; // 뒷면이 true
+                if (s.charAt(j) == 'T') {
+                    coins[i] += (1 << j);
+                }
             }
         }
     }
@@ -37,19 +39,8 @@ public class Main {
             // 뒷면
             int totalTails = 0;
 
-            // 각 열에 있는 뒷면 동전 개수
-            for (int col = 0; col < N; col++) {
-                int tailsInCol = 0;
-
-                for (int row = 0; row < N; row++) {
-                    boolean isFlipped = (rowFillped & (1 << row)) != 0; // 뒤집힘
-                    boolean coinState = (coins[row][col] ^ isFlipped); // 동전의 현재 상태
-
-                    if (coinState) {
-                        tailsInCol++;
-                    }
-                }
-                // 뒤집었을 때 vs 뒤집지 않았을 때
+            for (int row = 0; row < N; row++) {
+                int tailsInCol = Integer.bitCount(coins[row] ^ rowFillped);
                 totalTails += Math.min(tailsInCol, N - tailsInCol);
             }
             ans = Math.min(ans, totalTails);
