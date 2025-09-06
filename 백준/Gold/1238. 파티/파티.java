@@ -3,8 +3,6 @@ import java.util.*;
 
 public class Main {
 
-	private static final int INF = 987654321;
-
 	private static final BufferedReader  br = new BufferedReader(new InputStreamReader(System.in));
 	private static final BufferedWriter  bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	private static       StringTokenizer st;
@@ -12,13 +10,26 @@ public class Main {
 	private static int N;
 	private static int M;
 	private static int X;
-	private static int ans;
 
 	private static int[]         aDist;
 	private static int[]         dDist;
 	private static List<int[]>[] asc;
 	private static List<int[]>[] desc;
-	private static Queue<int[]>  pq;
+
+	static class Edge implements Comparable<Edge> {
+		int end;
+		int weight;
+
+		public Edge(int end, int weight) {
+			this.end    = end;
+			this.weight = weight;
+		}
+
+		@Override
+		public int compareTo(Edge o) {
+			return Integer.compare(this.weight, o.weight);
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 		init();
@@ -28,10 +39,9 @@ public class Main {
 	private static void init() throws IOException {
 		st = new StringTokenizer(br.readLine());
 
-		N   = Integer.parseInt(st.nextToken());
-		M   = Integer.parseInt(st.nextToken());
-		X   = Integer.parseInt(st.nextToken());
-		ans = 0;
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		X = Integer.parseInt(st.nextToken());
 
 		asc  = new List[N + 1];
 		desc = new List[N + 1];
@@ -49,51 +59,54 @@ public class Main {
 			asc[u].add(new int[] { v, w });
 			desc[v].add(new int[] { u, w });
 		}
-
-		pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
 	}
 
 	private static void sol() throws IOException {
 		aDist = dijkstra(X, desc);
 		dDist = dijkstra(X, asc);
 
-		int tmp = 0;
+		// INF 검사 제거 (첫 번째 코드 스타일)
+		int maxTime = 0;
 		for (int i = 1; i <= N; i++) {
-			if (i != X && aDist[i] != INF && dDist[i] != INF) {
-				tmp = Math.max(tmp, aDist[i] + dDist[i]);
+			if (i != X) {
+				maxTime = Math.max(maxTime, aDist[i] + dDist[i]);
 			}
 		}
 
-		bw.write(tmp + "");
+		bw.write(maxTime + "");
 		bw.flush();
 		bw.close();
 		br.close();
 	}
 
 	private static int[] dijkstra(int start, List<int[]>[] graph) {
-		Queue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
 
 		int[] dist = new int[N + 1];
-		Arrays.fill(dist, INF);
+		Arrays.fill(dist, Integer.MAX_VALUE);
 
 		dist[start] = 0;
-		pq.add(new int[] { start, 0 });
+		pq.offer(new Edge(start, 0));
 
 		while (!pq.isEmpty()) {
-			int[] cur = pq.poll();
+			Edge current   = pq.poll();
+			int  curEnd    = current.end;
+			int  curWeight = current.weight;
 
-			if (cur[1] > dist[cur[0]]) continue;
+			if (curWeight > dist[curEnd]) continue;
 
-			for (int[] edge : graph[cur[0]]) {
-				if (dist[edge[0]] <= dist[cur[0]] + edge[1]) {
-					continue;
+			for (int[] edge : graph[curEnd]) {
+				int nextEnd    = edge[0];
+				int nextWeight = edge[1];
+
+				int new_dist = dist[curEnd] + nextWeight;
+
+				if (new_dist < dist[nextEnd]) {
+					dist[nextEnd] = new_dist;
+					pq.offer(new Edge(nextEnd, new_dist));
 				}
-
-				dist[edge[0]] = dist[cur[0]] + edge[1];
-				pq.add(new int[] { edge[0], dist[edge[0]] });
 			}
 		}
 		return dist;
 	}
-
 }
