@@ -14,8 +14,10 @@ public class Main {
 	private static int X;
 	private static int ans;
 
-	private static int[]         dist;
-	private static List<int[]>[] graph;
+	private static int[]         aDist;
+	private static int[]         dDist;
+	private static List<int[]>[] asc;
+	private static List<int[]>[] desc;
 	private static Queue<int[]>  pq;
 
 	public static void main(String[] args) throws IOException {
@@ -31,10 +33,11 @@ public class Main {
 		X   = Integer.parseInt(st.nextToken());
 		ans = 0;
 
-		dist  = new int[N + 1];
-		graph = new List[N + 1];
+		asc  = new List[N + 1];
+		desc = new List[N + 1];
 		for (int i = 1; i <= N; i++) {
-			graph[i] = new ArrayList<>();
+			asc[i]  = new ArrayList<>();
+			desc[i] = new ArrayList<>();
 		}
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -43,30 +46,34 @@ public class Main {
 			int v = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
 
-			graph[u].add(new int[] { v, w });
+			asc[u].add(new int[] { v, w });
+			desc[v].add(new int[] { u, w });
 		}
 
 		pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
 	}
 
 	private static void sol() throws IOException {
-		int tmp;
-		for (int i = 1; i <= N; i++) {
-			if (i == X) continue;
+		aDist = dijkstra(X, desc);
+		dDist = dijkstra(X, asc);
 
-			tmp = 0;
-			tmp += dijkstra(i, X);
-			tmp += dijkstra(X, i);
-			ans = Math.max(ans, tmp);
+		int tmp = 0;
+		for (int i = 1; i <= N; i++) {
+			if (i != X && aDist[i] != INF && dDist[i] != INF) {
+				tmp = Math.max(tmp, aDist[i] + dDist[i]);
+			}
 		}
-		bw.write(ans + "");
+
+		bw.write(tmp + "");
 		bw.flush();
 		bw.close();
 		br.close();
 	}
 
-	private static int dijkstra(int start, int end) {
+	private static int[] dijkstra(int start, List<int[]>[] graph) {
 		pq.clear();
+
+		int[] dist = new int[N + 1];
 		Arrays.fill(dist, INF);
 
 		dist[start] = 0;
@@ -86,7 +93,7 @@ public class Main {
 				pq.add(new int[] { edge[0], dist[edge[0]] });
 			}
 		}
-		return dist[end];
+		return dist;
 	}
 
 }
