@@ -71,7 +71,7 @@ public class Main {
 	}
 
 	private static int[] dijkstra(int start, List<int[]>[] graph) {
-		pq.clear();
+		Queue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
 
 		int[] dist = new int[N + 1];
 		Arrays.fill(dist, INF);
