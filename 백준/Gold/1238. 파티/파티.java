@@ -11,22 +11,22 @@ public class Main {
 	private static int M;
 	private static int X;
 
-	private static int[]         aDist;
-	private static int[]         dDist;
-	private static List<int[]>[] asc;
-	private static List<int[]>[] desc;
+	private static int[]        aDist;
+	private static int[]        dDist;
+	private static List<Node>[] asc;
+	private static List<Node>[] desc;
 
-	static class Edge implements Comparable<Edge> {
+	static class Node implements Comparable<Node> {
 		int end;
 		int weight;
 
-		public Edge(int end, int weight) {
+		public Node(int end, int weight) {
 			this.end    = end;
 			this.weight = weight;
 		}
 
 		@Override
-		public int compareTo(Edge o) {
+		public int compareTo(Node o) {
 			return Integer.compare(this.weight, o.weight);
 		}
 	}
@@ -56,8 +56,8 @@ public class Main {
 			int v = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
 
-			asc[u].add(new int[] { v, w });
-			desc[v].add(new int[] { u, w });
+			asc[u].add(new Node(v, w));
+			desc[v].add(new Node(u, w));
 		}
 	}
 
@@ -65,7 +65,6 @@ public class Main {
 		aDist = dijkstra(X, desc);
 		dDist = dijkstra(X, asc);
 
-		// INF 검사 제거 (첫 번째 코드 스타일)
 		int maxTime = 0;
 		for (int i = 1; i <= N; i++) {
 			if (i != X) {
@@ -79,31 +78,31 @@ public class Main {
 		br.close();
 	}
 
-	private static int[] dijkstra(int start, List<int[]>[] graph) {
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
+	private static int[] dijkstra(int start, List<Node>[] graph) {
+		PriorityQueue<Node> pq = new PriorityQueue<>();
 
 		int[] dist = new int[N + 1];
 		Arrays.fill(dist, Integer.MAX_VALUE);
 
 		dist[start] = 0;
-		pq.offer(new Edge(start, 0));
+		pq.offer(new Node(start, 0));
 
 		while (!pq.isEmpty()) {
-			Edge current   = pq.poll();
+			Node current   = pq.poll();
 			int  curEnd    = current.end;
 			int  curWeight = current.weight;
 
 			if (curWeight > dist[curEnd]) continue;
 
-			for (int[] edge : graph[curEnd]) {
-				int nextEnd    = edge[0];
-				int nextWeight = edge[1];
+			for (Node next : graph[curEnd]) {
+				int nextEnd    = next.end;
+				int nextWeight = next.weight;
 
-				int new_dist = dist[curEnd] + nextWeight;
+				int newDist = dist[curEnd] + nextWeight;
 
-				if (new_dist < dist[nextEnd]) {
-					dist[nextEnd] = new_dist;
-					pq.offer(new Edge(nextEnd, new_dist));
+				if (newDist < dist[nextEnd]) {
+					dist[nextEnd] = newDist;
+					pq.offer(new Node(nextEnd, newDist));
 				}
 			}
 		}
