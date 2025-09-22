@@ -12,7 +12,7 @@ public class Main {
 	private static int N;
 	private static int Q;
 
-	private static Node[] spiciness;
+	private static Node[] taste;
 	private static int[]  sweetness;
 
 	private static class Node implements Comparable<Node> {
@@ -40,17 +40,17 @@ public class Main {
 		N  = Integer.parseInt(st.nextToken());
 		Q  = Integer.parseInt(st.nextToken());
 
-		spiciness = new Node[N];
+		taste = new Node[N];
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 
 			int s = Integer.parseInt(st.nextToken());
 			int w = Integer.parseInt(st.nextToken());
 
-			spiciness[i] = new Node(s, w);
+			taste[i] = new Node(s, w);
 		}
 
-		Arrays.sort(spiciness);
+		Arrays.sort(taste);
 	}
 
 	private static void sol() throws IOException {
@@ -66,23 +66,19 @@ public class Main {
 			int right = upperBound(s2);
 
 			if (left >= right) {
-				bw.write("0\n");
+        		sb.append("0\n");
 				continue;
 			}
 
-			int len = right - left;
-
-			sweetness = new int[len];
+			int cnt = 0;
 			for (int i = left; i < right; i++) {
-				sweetness[i - left] = spiciness[i].sweetness;
+				if (w1 <= taste[i].sweetness && taste[i].sweetness <= w2) {
+					cnt++;
+				}
 			}
-			Arrays.sort(sweetness);
-
-			int sweetLeft  = lowerBoundSweetness(w1, len);
-			int sweetRight = upperBoundSweetness(w2, len);
-
-			bw.write((sweetRight - sweetLeft) + "\n");
+			sb.append(cnt).append("\n");
 		}
+		bw.write(sb.toString());
 		bw.flush();
 		bw.close();
 		br.close();
@@ -96,7 +92,7 @@ public class Main {
 		while (left < right) {
 			int mid = left + (right - left) / 2;
 
-			if (spiciness[mid].spiciness < target) {
+			if (taste[mid].spiciness < target) {
 				left = mid + 1;
 			} else {
 				right = mid;
@@ -113,41 +109,7 @@ public class Main {
 		while (left < right) {
 			int mid = left + (right - left) / 2;
 
-			if (spiciness[mid].spiciness <= target) {
-				left = mid + 1;
-			} else {
-				right = mid;
-			}
-		}
-		return left;
-	}
-
-	// w1 이상인 첫 번째 인덱스
-	private static int lowerBoundSweetness(int target, int len) {
-		int left  = 0;
-		int right = len;
-
-		while (left < right) {
-			int mid = left + (right - left) / 2;
-
-			if (sweetness[mid] < target) {
-				left = mid + 1;
-			} else {
-				right = mid;
-			}
-		}
-		return left;
-	}
-
-	// w2 초과인 첫 번째 인덱스
-	private static int upperBoundSweetness(int target, int len) {
-		int left  = 0;
-		int right = len;
-
-		while (left < right) {
-			int mid = left + (right - left) / 2;
-
-			if (sweetness[mid] <= target) {
+			if (taste[mid].spiciness <= target) {
 				left = mid + 1;
 			} else {
 				right = mid;
