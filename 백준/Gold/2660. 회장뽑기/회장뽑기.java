@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -79,7 +78,9 @@ public class Main {
 		}
 
 		sb.append(tmp).append(" ").append(candidate.size()).append("\n");
-		sb.append(candidate.stream().map(String::valueOf).collect(Collectors.joining(" ")));
+		for (int i : candidate) {
+			sb.append(i).append(" ");
+		}
 		bw.write(sb.toString());
 		bw.flush();
 		bw.close();
