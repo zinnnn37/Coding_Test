@@ -3,13 +3,11 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	private static final BufferedReader  br = new BufferedReader(new InputStreamReader(System.in));
-	private static final BufferedWriter  bw = new BufferedWriter(new OutputStreamWriter(System.out));
-	private static       StringTokenizer st;
+	private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	private static StringTokenizer st;
 
-	private static int        N;
-	private static int        max;
-	private static int[]      dp;
+	private static int N;
+	private static int[] dp;
 	private static Schedule[] schedule;
 
 	private static class Schedule {
@@ -18,7 +16,7 @@ public class Main {
 
 		Schedule(int time, int pay) {
 			this.time = time;
-			this.pay  = pay;
+			this.pay = pay;
 		}
 	}
 
@@ -28,9 +26,8 @@ public class Main {
 	}
 
 	private static void init() throws IOException {
-		N        = Integer.parseInt(br.readLine());
-		max      = 0;
-		dp       = new int[N + 1];
+		N = Integer.parseInt(br.readLine());
+		dp = new int[N + 1];
 		schedule = new Schedule[N + 1];
 
 		for (int i = 1; i <= N; i++) {
@@ -50,12 +47,9 @@ public class Main {
 			if (idx > N) continue;
 
 			dp[idx] = Math.max(dp[i - 1] + schedule[i].pay, dp[idx]);
-			max = Math.max(max, dp[i + schedule[i].time - 1]);
 		}
-		bw.write(dp[N] + "\n");
-		bw.flush();
-		bw.close();
+		
+		System.out.println(dp[N]);
 		br.close();
 	}
-
 }
