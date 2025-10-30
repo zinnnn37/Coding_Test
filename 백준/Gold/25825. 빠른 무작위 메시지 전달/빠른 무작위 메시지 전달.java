@@ -7,9 +7,8 @@ public class Main {
     private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     private static StringTokenizer st;
 
-    private static int ans;
+    private static int ans, visited;
     private static int[][] friends;
-    private static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -31,17 +30,16 @@ public class Main {
                 friends[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        visited = new boolean[6];
     }
 
     private static void sol() throws IOException {
         for (int nextGroup = 0; nextGroup < 6; nextGroup++) {
             int next = nextGroup * 2;
 
-            visited[nextGroup] = true;
+            visited |= (1 << nextGroup);
             dfs(1, next + 1, friends[next][next + 1]);
             dfs(1, next, friends[next + 1][next]);
-            visited[nextGroup] = false;
+            visited &= ~(1 << nextGroup);
         }
     }
 
@@ -52,14 +50,14 @@ public class Main {
         }
 
         for (int i = 0; i < 6; i++) {
-            if (visited[i]) continue;
+            if ((visited & (1 << i)) != 0) continue;
 
             int next = i * 2;
 
-            visited[i] = true;
+            visited |= (1 << i);
             dfs(depth + 1, next, sum + friends[cur][next + 1] + friends[next + 1][next]);
             dfs(depth + 1, next + 1, sum + friends[cur][next] + friends[next][next + 1]);
-            visited[i] = false;
+            visited &= ~(1 << i);
         }
     }
 
