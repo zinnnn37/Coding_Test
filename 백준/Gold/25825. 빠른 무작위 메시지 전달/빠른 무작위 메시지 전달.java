@@ -7,7 +7,7 @@ public class Main {
     private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     private static StringTokenizer st;
 
-    private static long ans;
+    private static int ans;
     private static int[][] friends;
     private static boolean[] visited;
 
@@ -22,7 +22,7 @@ public class Main {
     }
 
     private static void init() throws IOException {
-        ans = Long.MAX_VALUE;
+        ans = Integer.MAX_VALUE;
 
         friends = new int[12][12];
         for (int i = 0; i < 12; i++) {
@@ -45,7 +45,7 @@ public class Main {
         }
     }
 
-    private static void dfs(int depth, int cur, long sum) throws IOException {
+    private static void dfs(int depth, int cur, int sum) throws IOException {
         if (depth == 6) {
             ans = Math.min(ans, sum);
             return;
