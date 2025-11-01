@@ -45,8 +45,9 @@ public class Main {
 		}
 
 		for (int i = 0; i < N; i++) {
-			bw.write(ans[i] != -1 ? ans[i] + "\n" : "infinity\n");
+			sb.append(ans[i] != -1 ? ans[i] + "\n" : "infinity\n");
 		}
+		bw.write(sb.toString());
 		bw.flush();
 		bw.close();
 		br.close();
