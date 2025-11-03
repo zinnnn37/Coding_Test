@@ -62,11 +62,9 @@ public class Main {
 
 		int curY = maxHeap.peek().y;
 
-		// 새로 생긴 대피소의 x, y값 더하기
 		totalDist += Math.abs(newShelter.x);
 		totalDist += Math.abs(newShelter.y - curY);
 
-		// 변화된 만큼만 계산
 		int diff       = curY - prevY;
 		int lowerCount = maxHeap.size() - 1;
 		int upperCount = minHeap.size();
