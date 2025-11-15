@@ -1,28 +1,16 @@
 class Solution {
     
     private static int target, len, ans;
-    private static int[] nums, ops;
+    private static int[] nums;
     
-    private static void calc() {
-        int sum = 0;
-        for (int i = 0; i < len; i++) {
-            sum += ops[i] * nums[i];
-        }
-        
-        if (sum == target) ans++;
-    }
-    
-    private static void dfs(int start) {
+    private static void dfs(int start, int sum) {
         if (start == len) {
-            calc();
+            if (sum == target) ans++;
             return;
         }
         
-        ops[start] = -1;
-        dfs(start + 1);
-            
-        ops[start] = 1;
-        dfs(start + 1);
+        dfs(start + 1, sum - nums[start]);
+        dfs(start + 1, sum + nums[start]);
     }
     
     public int solution(int[] n, int t) {
@@ -31,9 +19,7 @@ class Solution {
         len = n.length;
         ans = 0;
         
-        ops = new int[len];
-        
-        dfs(0);
+        dfs(0, 0);
         
         return ans;
     }
