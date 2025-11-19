@@ -13,7 +13,7 @@ class Solution {
             pq.offer(s);
         }
         
-        while (!pq.isEmpty() && pq.peek() < K) {
+        while (pq.peek() < K) {
             if (pq.size() < 2) return -1;
             
             int a = pq.poll();
