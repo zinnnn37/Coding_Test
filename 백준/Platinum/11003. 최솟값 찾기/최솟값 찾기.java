@@ -6,7 +6,6 @@ public class Main {
 
     private static final BufferedReader  br = new BufferedReader(new InputStreamReader(System.in));
     private static final BufferedWriter  bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    private static final StringBuilder   sb = new StringBuilder();
     private static       StringTokenizer st;
 
     private static int N, L;
@@ -14,7 +13,6 @@ public class Main {
     private static ArrayDeque<Node> dq;
 
     private static class Node {
-
         int idx;
         int val;
 
@@ -22,7 +20,6 @@ public class Main {
             this.idx = idx;
             this.val = val;
         }
-
     }
 
     public static void main(String[] args) throws IOException {
@@ -48,17 +45,16 @@ public class Main {
         for (int i = 0; i < N; i++) {
             while (!dq.isEmpty() && dq.getLast().val >= nums[i]) dq.removeLast();
 
-            dq.offer(new Node(i, nums[i]));
+            dq.addLast(new Node(i, nums[i]));
 
-            if (dq.getFirst().idx == i - L) dq.removeFirst();
+            if (dq.getFirst().idx <= i - L) dq.removeFirst();
 
-            sb.append(dq.getFirst().val).append(' ');
+            bw.write(Integer.toString(dq.getFirst().val));
+            bw.write(' ');
         }
 
-        bw.write(sb.toString());
         bw.flush();
         bw.close();
         br.close();
     }
-
 }
