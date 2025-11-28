@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,7 +9,6 @@ public class Main {
     private static StringTokenizer st;
 
     private static int N, Q, ans;
-    private static int[] res;
     private static int[][] nums;
     private static int[][][] prefix;
 
@@ -22,7 +20,6 @@ public class Main {
     private static void init() throws IOException {
         N = Integer.parseInt(br.readLine());
 
-        res = new int[11];
         nums = new int[N + 1][N + 1];
         for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
@@ -55,10 +52,10 @@ public class Main {
             int y2 = Integer.parseInt(st.nextToken());
 
             ans = 0;
-            Arrays.fill(res, 0);
             for (int k = 1; k <= 10; k++) {
-                res[k] = prefix[x2][y2][k] - prefix[x1][y2][k] - prefix[x2][y1][k] + prefix[x1][y1][k];
-                if (res[k] > 0) ans += 1;
+                int count = prefix[x2][y2][k] - prefix[x1][y2][k]
+                        - prefix[x2][y1][k] + prefix[x1][y1][k];
+                if (count > 0) ans++;
             }
             sb.append(ans).append("\n");
         }
