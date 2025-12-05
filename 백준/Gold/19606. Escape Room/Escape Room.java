@@ -12,6 +12,7 @@ public class Main {
 
     private static int M, N;
     private static int[][]      matrix;
+    private static boolean[]    checked;
     private static boolean[][]  visited;
     private static Queue<Point> q;
 
@@ -24,6 +25,7 @@ public class Main {
         M = Integer.parseInt(br.readLine());
         N = Integer.parseInt(br.readLine());
 
+        checked = new boolean[1_000_001];
         matrix = new int[M + 1][N + 1];
         for (int i = 1; i <= M; i++) {
             st = new StringTokenizer(br.readLine());
@@ -55,7 +57,10 @@ public class Main {
             }
 
             int target = matrix[cur.x][cur.y];
-            for (int i = 1; i * i <= target; i++) {                
+            if (checked[target]) continue;
+            checked[target] = true;
+
+            for (int i = 1; i * i <= target; i++) {
                 if (target % i != 0) continue;
 
                 int nx = i;
