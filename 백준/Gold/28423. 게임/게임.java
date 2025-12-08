@@ -8,7 +8,8 @@ public class Main {
     private static final BufferedWriter  bw = new BufferedWriter(new OutputStreamWriter(System.out));
     private static       StringTokenizer st;
 
-    private static int L, R, A, B, ans;
+    private static int L, R, ans;
+    private static int[]     memo;
     private static boolean[] checked;
 
     public static void main(String[] args) throws IOException {
@@ -22,12 +23,13 @@ public class Main {
         R = Integer.parseInt(st.nextToken());
 
         ans = 0;
+        memo = new int[100_001];
         checked = new boolean[100_001];
+        Arrays.fill(memo, 2);
     }
 
     private static void sol() throws IOException {
         for (int i = L; i <= R; i++) {
-            Arrays.fill(checked, false);
             ans += dfs(i);
         }
         bw.write(ans + "");
@@ -37,9 +39,14 @@ public class Main {
     }
 
     private static int dfs(int cur) {
-        if (checked[cur]) {
-            return 0;
+        if (memo[cur] != 2) {
+            return memo[cur];
         }
+
+        if (checked[cur]) {
+            return memo[cur] = 0;
+        }
+
         checked[cur] = true;
 
         int A = 0;
@@ -52,15 +59,18 @@ public class Main {
             tmp /= 10;
         }
 
-        int res = Integer.parseInt(String.valueOf(A) + B);
+        int res = Integer.parseInt(String.valueOf(A) + String.valueOf(B));
 
         if (cur == res) {
-            return 1;
+            memo[cur] = 1;
         } else if (res > 100000) {
-            return -1;
+            memo[cur] = -1;
         } else {
-            return dfs(res);
+            memo[cur] = dfs(res);
         }
+        checked[cur] = false;
+
+        return memo[cur];
     }
 
 }
