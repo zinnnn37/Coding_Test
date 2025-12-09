@@ -25,32 +25,29 @@ public class Main {
             nums[i] = Integer.parseInt(st.nextToken());
         }
         dp = new long[N][21];
+        dp[0][nums[0]] = 1;
     }
 
     private static void sol() throws IOException {
-        bw.write(dfs(1, nums[0]) + "");
+        for (int i = 1; i < N - 1; i++) {
+            for (int prev = 0; prev <= 20; prev++) {
+                if (dp[i - 1][prev] == 0) continue;
+
+                int sum = prev + nums[i];
+                int gap = prev - nums[i];
+
+                if (sum <= 20) {
+                    dp[i][sum] += dp[i - 1][prev];
+                }
+                if (gap >= 0) {
+                    dp[i][gap] += dp[i - 1][prev];
+                }
+            }
+        }
+        bw.write(dp[N - 2][nums[N - 1]] + "");
         bw.flush();
         bw.close();
         br.close();
-    }
-
-    private static long dfs(int depth, int sum) {
-        if (depth == N - 1) {
-            return sum == nums[depth] ? 1 : 0;
-        }
-
-        if (dp[depth][sum] != 0) {
-            return dp[depth][sum];
-        }
-
-        if (sum + nums[depth] <= 20) {
-            dp[depth][sum] += dfs(depth + 1, sum + nums[depth]);
-        }
-        if (sum - nums[depth] >= 0) {
-            dp[depth][sum] += dfs(depth + 1, sum - nums[depth]);
-        }
-
-        return dp[depth][sum];
     }
 
 }
