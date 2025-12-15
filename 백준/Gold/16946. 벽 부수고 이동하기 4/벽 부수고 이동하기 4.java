@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-import java.util.Queue;
 
 public class Main {
 
@@ -13,12 +12,11 @@ public class Main {
     private static StringBuilder   sb = new StringBuilder();
     private static StringTokenizer st;
 
-    private static int N, M, index;
-    private static int[][]               matrix;
-    private static boolean[][]           visited;
-    private static Queue<Point>          q;
-    private static Set<Integer>          set;
-    private static Map<Integer, Integer> groups;
+    private static int N, M;
+    private static int[][]     matrix;
+    private static boolean[][] visited;
+    private static Queue<Point> q;
+    private static Queue<Point> walls;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -29,7 +27,6 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        index = 2;
 
         matrix = new int[N][M];
         for (int i = 0; i < N; i++) {
@@ -40,8 +37,7 @@ public class Main {
         }
         visited = new boolean[N][M];
         q = new ArrayDeque<>();
-        set = new HashSet<>();
-        groups = new HashMap<>();
+        walls = new ArrayDeque<>();
     }
 
     private static void sol() throws IOException {
@@ -49,11 +45,9 @@ public class Main {
             for (int j = 0; j < M; j++) {
                 if (matrix[i][j] == 0 && !visited[i][j]) {
                     bfs(i, j);
-                    index++;
                 }
             }
         }
-
         printMat();
 
         bw.write(sb.toString());
@@ -64,49 +58,42 @@ public class Main {
 
     private static void bfs(int i, int j) {
         q.clear();
+        walls.clear();
+        
         q.offer(new Point(i, j));
         visited[i][j] = true;
-        matrix[i][j] = index;
 
-        int cnt = 1;
+        int cnt = 0;
         while (!q.isEmpty()) {
             Point cur = q.poll();
+            cnt++;
 
             for (int d = 0; d < 4; d++) {
                 int nx = cur.x + dx[d];
                 int ny = cur.y + dy[d];
 
-                if (OOB(nx, ny) || visited[nx][ny] || matrix[nx][ny] != 0) continue;
+                if (OOB(nx, ny) || visited[nx][ny]) continue;
 
                 visited[nx][ny] = true;
-                matrix[nx][ny] = index;
-                cnt++;
-                q.offer(new Point(nx, ny));
+                if (matrix[nx][ny] == 0) {
+                    q.offer(new Point(nx, ny));
+                } else {
+                    walls.offer(new Point(nx, ny));
+                }
             }
         }
-        groups.put(index, cnt);
+        
+        while (!walls.isEmpty()) {
+            Point wall = walls.poll();
+            matrix[wall.x][wall.y] += cnt;
+            visited[wall.x][wall.y] = false;
+        }
     }
 
     private static void printMat() {
-        int cnt;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                if (matrix[i][j] != 1) {
-                    sb.append(0);
-                } else {
-                    cnt = 1;
-                    set.clear();
-                    for (int d = 0; d < 4; d++) {
-                        int nx = i + dx[d];
-                        int ny = j + dy[d];
-
-                        if (OOB(nx, ny) || matrix[nx][ny] == 1 || set.contains(matrix[nx][ny])) continue;
-
-                        set.add(matrix[nx][ny]);
-                        cnt += groups.get(matrix[nx][ny]);
-                    }
-                    sb.append(cnt % 10);
-                }
+                sb.append(matrix[i][j] % 10);
             }
             sb.append("\n");
         }
