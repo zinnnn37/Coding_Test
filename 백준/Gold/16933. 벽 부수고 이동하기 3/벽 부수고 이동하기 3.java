@@ -1,5 +1,6 @@
 import java.io.*;
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -13,11 +14,11 @@ public class Main {
     private static StringTokenizer st;
 
     private static int N, M, K;
-    private static char[][]      matrix;
-    private static boolean[][][] visited;
-    private static Queue<Node>   q;
+    private static char[][]    matrix;
+    private static int[][]     visited;
+    private static Queue<Node> q;
 
-    private static class Node implements Comparable<Node> {
+    private static class Node {
         int     x;
         int     y;
         int     k;
@@ -30,11 +31,6 @@ public class Main {
             this.k = k;
             this.cnt = cnt;
             this.isDay = isDay;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return Integer.compare(this.cnt, o.cnt);
         }
 
     }
@@ -56,18 +52,20 @@ public class Main {
 
         matrix = new char[N][M];
         for (int i = 0; i < N; i++) {
-            String input = br.readLine();
-            for (int j = 0; j < M; j++) {
-                matrix[i][j] = input.charAt(j);
-            }
+            matrix[i] = br.readLine().toCharArray();
         }
-        visited = new boolean[N][M][K + 1];
-        q = new PriorityQueue<>();
+
+        visited = new int[N][M];
+        for (int i = 0; i < N; i++) {
+            Arrays.fill(visited[i], Integer.MAX_VALUE);
+        }
+
+        q = new ArrayDeque<>();
     }
 
     private static void sol() throws IOException {
         q.offer(new Node(0, 0, 0, 1, true));
-        visited[0][0][0] = true;
+        visited[0][0] = 0;
 
         while (!q.isEmpty()) {
             Node cur = q.poll();
@@ -81,18 +79,17 @@ public class Main {
                 int nx = cur.x + dx[d];
                 int ny = cur.y + dy[d];
 
-                if (OOB(nx, ny)) continue;
+                if (OOB(nx, ny) || visited[nx][ny] <= cur.k) continue;
 
-                if (!visited[nx][ny][cur.k] && matrix[nx][ny] == '0') {
-                    visited[nx][ny][cur.k] = true;
+                if (matrix[nx][ny] == '0') {
+                    visited[nx][ny] = cur.k;
                     q.offer(new Node(nx, ny, cur.k, cur.cnt + 1, !cur.isDay));
-                } else if (cur.k < K && !visited[nx][ny][cur.k + 1] && matrix[nx][ny] == '1') {
+                } else if (cur.k < K && visited[nx][ny] > cur.k + 1) {
                     if (cur.isDay) {
-                        visited[nx][ny][cur.k + 1] = true;
+                        visited[nx][ny] = cur.k + 1;
                         q.offer(new Node(nx, ny, cur.k + 1, cur.cnt + 1, false));
                     } else {
-                        visited[nx][ny][cur.k + 1] = true;
-                        q.offer(new Node(nx, ny, cur.k + 1, cur.cnt + 2, false));
+                        q.offer(new Node(cur.x, cur.y, cur.k, cur.cnt + 1, true));
                     }
                 }
             }
