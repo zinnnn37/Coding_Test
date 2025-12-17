@@ -13,17 +13,6 @@ public class Main {
     private static int V, E, ans;
     private static int[][] matrix;
 
-    private static class Node {
-        int to;
-        int weight;
-
-        Node(int to, int weight) {
-            this.to = to;
-            this.weight = weight;
-        }
-
-    }
-
     public static void main(String[] args) throws IOException {
         init();
         sol();
@@ -53,9 +42,9 @@ public class Main {
     }
 
     private static void sol() throws IOException {
-        for (int i = 1; i <= V; i++) {
-            for (int j = 1; j <= V; j++) {
-                for (int k = 1; k <= V; k++) {
+        for (int k = 1; k <= V; k++) {
+            for (int i = 1; i <= V; i++) {
+                for (int j = 1; j <= V; j++) {
                     matrix[i][j] = Math.min(matrix[i][j], matrix[i][k] + matrix[k][j]);
                 }
             }
@@ -66,6 +55,7 @@ public class Main {
         }
 
         bw.write(ans != INF ? ans + "" : "-1");
+
         bw.flush();
         bw.close();
         br.close();
