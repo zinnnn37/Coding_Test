@@ -1,7 +1,7 @@
 import java.io.*;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.Deque;
 
 public class Main {
 
@@ -14,9 +14,9 @@ public class Main {
     private static int         N;
     private static int[][]     dist;
     private static char[][]    matrix;
-    private static Queue<Node> q;
+    private static Deque<Node> dq;
 
-    private static class Node implements Comparable<Node> {
+    private static class Node {
         int x;
         int y;
         int cnt;
@@ -25,11 +25,6 @@ public class Main {
             this.x = x;
             this.y = y;
             this.cnt = cnt;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return Integer.compare(this.cnt, o.cnt);
         }
 
     }
@@ -55,15 +50,15 @@ public class Main {
             Arrays.fill(row, Integer.MAX_VALUE);
         }
 
-        q = new PriorityQueue<>();
+        dq = new ArrayDeque<>();
     }
 
     private static void sol() throws IOException {
-        q.offer(new Node(0, 0, 0));
+        dq.offer(new Node(0, 0, 0));
         dist[0][0] = 0;
 
-        while (!q.isEmpty()) {
-            Node cur = q.poll();
+        while (!dq.isEmpty()) {
+            Node cur = dq.poll();
 
             if (cur.x == N - 1 && cur.y == N - 1) {
                 bw.write(cur.cnt + "");
@@ -86,7 +81,11 @@ public class Main {
                 if (newCost < dist[nx][ny]) {
                     dist[nx][ny] = newCost;
 
-                    q.offer(new Node(nx, ny, newCost));
+                    if (matrix[nx][ny] == '1') {
+                        dq.offerFirst(new Node(nx, ny, newCost));
+                    } else {
+                        dq.offerLast(new Node(nx, ny, newCost));
+                    }
                 }
             }
         }
