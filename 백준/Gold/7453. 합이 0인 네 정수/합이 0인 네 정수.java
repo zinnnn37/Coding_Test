@@ -39,10 +39,11 @@ public class Main {
     }
 
     private static void sol() throws IOException {
+        int idx = 0;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                AB[i * N + j] = A[i] + B[j];
-                CD[i * N + j] = C[i] + D[j];
+                AB[idx] = A[i] + B[j];
+                CD[idx++] = C[i] + D[j];
             }
         }
         Arrays.sort(AB);
