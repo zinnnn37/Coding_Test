@@ -22,13 +22,9 @@ public class Main {
 
         stalactite = new int[H + 2];
         stalagmite = new int[H + 2];
-        for (int i = 0; i < N; i++) {
-
-            if (i % 2 == 1) {
-                stalactite[H - Integer.parseInt(br.readLine()) + 1] += 1;
-            } else {
-                stalagmite[Integer.parseInt(br.readLine())] += 1;
-            }
+        for (int i = 0; i < N / 2; i++) {
+            stalagmite[Integer.parseInt(br.readLine())] += 1;
+            stalactite[H - Integer.parseInt(br.readLine()) + 1] += 1;
         }
 
         prefix1 = new int[H + 2];
