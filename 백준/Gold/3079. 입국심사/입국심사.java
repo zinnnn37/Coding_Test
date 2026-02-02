@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,8 +8,8 @@ public class Main {
     private static       StringTokenizer st;
 
     private static int N, M;
-    private static long                  max;
-    private static Map<Integer, Integer> map;
+    private static int   min;
+    private static int[] immigration;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -23,18 +21,17 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        max = 0;
-        map = new HashMap<>();
+        min = Integer.MAX_VALUE;
+        immigration = new int[N];
         for (int i = 0; i < N; i++) {
-            int key = Integer.parseInt(br.readLine());
-            map.put(key, map.getOrDefault(key, 0) + 1);
-            max = Math.max(max, key);
+            immigration[i] = Integer.parseInt(br.readLine());
+            min = Math.min(min, immigration[i]);
         }
     }
 
     private static void sol() throws IOException {
-        long left  = 0;
-        long right = ((M + N - 1) / N) * max;
+        long left  = 1;
+        long right = (long) min * M;
         while (left < right) {
             long mid = left + (right - left) / 2;
 
@@ -44,7 +41,7 @@ public class Main {
                 left = mid + 1;
             }
         }
-        bw.write(right + "");
+        bw.write(left + "");
         bw.flush();
         bw.close();
         br.close();
@@ -52,8 +49,9 @@ public class Main {
 
     private static boolean canUseImmigration(long time) {
         long cnt = 0;
-        for (int key : map.keySet()) {
-            cnt += (time / key) * map.get(key);
+        for (int t : immigration) {
+            cnt += time / t;
+            if (cnt >= M) return true;
         }
         return cnt >= M;
     }
