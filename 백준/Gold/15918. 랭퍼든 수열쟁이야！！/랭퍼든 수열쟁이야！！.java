@@ -27,7 +27,7 @@ public class Main {
     }
 
     private static void sol() throws IOException {
-        rec(1);
+        rec(n);
         bw.write(ans + "");
         bw.flush();
         bw.close();
@@ -35,13 +35,13 @@ public class Main {
     }
 
     private static void rec(int num) {
-        if (num > n) {
+        if (num < 1) {
             ans++;
             return;
         }
 
         if (num == fixed) {
-            rec(num + 1);
+            rec(num - 1);
             return;
         }
 
@@ -50,7 +50,7 @@ public class Main {
                 continue;
             }
             arr[idx] = arr[idx + num + 1] = num;
-            rec(num + 1);
+            rec(num - 1);
             arr[idx] = arr[idx + num + 1] = 0;
         }
     }
