@@ -8,7 +8,7 @@ public class Main {
     private static final BufferedWriter  bw = new BufferedWriter(new OutputStreamWriter(System.out));
     private static       StringTokenizer st;
 
-    private static int N, M, L, a, b, upper, lower, idx, ans;
+    private static int N, M, L, a, b, idx1, idx2, target, ans;
     private static int[] shootingLane;
 
     public static void main(String[] args) throws IOException {
@@ -38,16 +38,13 @@ public class Main {
 
             if (b > L) continue;
 
-            upper = upperbound(a);
-            lower = lowerbound(a);
+            idx1 = upperbound(a);
+            idx2 = idx1 > 0 ? idx1 - 1 : idx1;
 
-            idx = Math.abs(upper - a) < Math.abs(lower - a) ? upper : lower;
+            target = Math.abs(shootingLane[idx1] - a) < Math.abs(
+                    shootingLane[idx2] - a) ? shootingLane[idx1] : shootingLane[idx2];
 
-            //            System.out.println(upper + " " + lower + " " + idx);
-            //            System.out.println(Math.abs(idx - a) + b);
-            //            System.out.println();
-
-            if (Math.abs(idx - a) + b <= L) {
+            if (Math.abs(target - a) + b <= L) {
                 ans++;
             }
         }
@@ -70,23 +67,7 @@ public class Main {
                 right = mid;
             }
         }
-        return shootingLane[Math.min(right, M - 1)];
-    }
-
-    private static int lowerbound(int target) {
-        int left  = 0;
-        int right = M;
-
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-
-            if (shootingLane[mid] >= target) {
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
-        }
-        return shootingLane[Math.min(left, M - 1)];
+        return Math.min(right, M - 1);
     }
 
 }
