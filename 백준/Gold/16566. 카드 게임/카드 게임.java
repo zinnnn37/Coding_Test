@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,7 +9,8 @@ public class Main {
     private static       StringTokenizer st;
 
     private static int N, M, K;
-    private static int[] cards, choices, parents;
+    private static int[] choices, parents;
+    private static boolean[] cards;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -23,52 +23,37 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        cards = new int[M];
+        cards = new boolean[N + 1];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < M; i++) {
-            cards[i] = Integer.parseInt(st.nextToken());
+            cards[Integer.parseInt(st.nextToken())] = true;
         }
-        Arrays.sort(cards);
+
+        parents = new int[N + 2];
+        int parent = 0;
+        for (int i = N; i > 0; i--) {
+            if (cards[i]) parent = i;
+            parents[i] = parent;
+        }
 
         choices = new int[K];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < K; i++) {
             choices[i] = Integer.parseInt(st.nextToken());
         }
-
-        parents = new int[M + 1];
-        for (int i = 0; i < M; i++) {
-            parents[i] = i;
-        }
     }
 
     private static void sol() throws IOException {
-        for (int i = 0; i < K; i++) {
-            int target = find(upperBound(choices[i]));
-            sb.append(cards[parents[target]]).append("\n");
+        for (int choice : choices) {
+            int target = find(choice + 1);
 
+            sb.append(parents[target]).append("\n");
             union(target, target + 1);
         }
         bw.write(sb.toString());
         bw.flush();
         bw.close();
         br.close();
-    }
-
-    private static int upperBound(int choice) {
-        int left  = 0;
-        int right = M - 1;
-
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-
-            if (cards[mid] <= choice) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-        return right;
     }
 
     private static int find(int a) {
