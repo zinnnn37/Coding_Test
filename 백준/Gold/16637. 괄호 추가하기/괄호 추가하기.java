@@ -1,22 +1,29 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
 
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
     private static int N, ans;
+    private static String line;
     private static int[]  nums;
     private static char[] ops;
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        init();
+        sol();
+    }
+
+    private static void init() throws IOException {
         N = Integer.parseInt(br.readLine());
-        String line = br.readLine();
+        ans = Integer.MIN_VALUE;
 
         int numCnt = N / 2 + 1;
         nums = new int[numCnt];
         ops = new char[numCnt - 1];
 
+        line = br.readLine();
         for (int i = 0; i < N; i++) {
             if (i % 2 == 0) {
                 nums[i / 2] = line.charAt(i) - '0';
@@ -24,11 +31,15 @@ public class Main {
                 ops[i / 2] = line.charAt(i);
             }
         }
+    }
 
-        ans = Integer.MIN_VALUE;
+    private static void sol() throws IOException {
         rec(0, nums[0]);
 
-        System.out.println(ans);
+        bw.write(ans + "");
+        bw.flush();
+        bw.close();
+        br.close();
     }
 
     private static void rec(int idx, int cur) {
