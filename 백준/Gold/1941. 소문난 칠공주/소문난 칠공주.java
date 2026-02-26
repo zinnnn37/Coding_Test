@@ -1,33 +1,18 @@
 import java.io.*;
-import java.util.*;
 
 public class Main {
 
-    private static final int   N  = 5;
-    private static final int   C  = 25;
-    private static final int[] dx = { -1, 1, 0, 0 };
-    private static final int[] dy = { 0, 0, -1, 1 };
+    private static final int   N    = 5;
+    private static final int   SIZE = 25;
+    private static final int[] dx   = { -1, 1, 0, 0 };
+    private static final int[] dy   = { 0, 0, -1, 1 };
 
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    private static int          ans;
-    private static int[]        order;
-    private static char[][]     matrix;
-    private static boolean[][]  visited;
-    private static Queue<Node>  q;
-    private static Set<Integer> set;
-
-    private static class Node {
-        int x;
-        int y;
-
-        public Node(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-    }
+    private static int        ans;
+    private static boolean[]  visited;
+    private static boolean[][] isS;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -35,23 +20,24 @@ public class Main {
     }
 
     private static void init() throws IOException {
-        matrix = new char[N][N];
+        isS = new boolean[N][N];
         for (int i = 0; i < N; i++) {
             String line = br.readLine();
             for (int j = 0; j < N; j++) {
-                matrix[i][j] = line.charAt(j);
+                isS[i][j] = line.charAt(j) == 'S';
             }
         }
-        visited = new boolean[N][N];
-        q = new ArrayDeque<>();
-
-        order = new int[7];
-
-        set = new HashSet<>();
+        visited = new boolean[1 << SIZE];
     }
 
     private static void sol() throws IOException {
-        setOrder(0, 0);
+        for (int i = 0; i < SIZE; i++) {
+            if (!isS[i / N][i % N]) continue;
+
+            int mask = 1 << i;
+            visited[mask] = true;
+            dfs(1, 1, mask);
+        }
 
         bw.write(ans + "");
         bw.flush();
@@ -59,66 +45,35 @@ public class Main {
         br.close();
     }
 
-    private static void setOrder(int depth, int start) {
+    private static void dfs(int depth, int sCount, int mask) {
+        if (7 - depth + sCount < 4) return;
+
         if (depth == 7) {
-            checkValid();
+            ans++;
             return;
         }
 
-        for (int i = start; i < C; i++) {
-            order[depth] = i;
-            setOrder(depth + 1, i + 1);
-        }
-    }
+        for (int i = 0; i < SIZE; i++) {
+            if ((mask & (1 << i)) == 0) continue;
 
-    private static void checkValid() {
-        int cnt = 0;
-        for (int o : order) {
-            if (matrix[o / N][o % N] == 'S') {
-                cnt++;
-            }
-        }
-
-        if (cnt < 4) return;
-
-        clear();
-
-        int x        = order[0] / N;
-        int y        = order[0] % N;
-        int visitCnt = 1;
-
-        q.offer(new Node(x, y));
-        visited[x][y] = true;
-        while (!q.isEmpty()) {
-            Node node = q.poll();
+            int x = i / N;
+            int y = i % N;
 
             for (int d = 0; d < 4; d++) {
-                int nx = node.x + dx[d];
-                int ny = node.y + dy[d];
+                int nx = x + dx[d];
+                int ny = y + dy[d];
 
-                if (OOB(nx, ny) || visited[nx][ny] || !set.contains(nx * 5 + ny)) continue;
+                if (OOB(nx, ny)) continue;
 
-                visited[nx][ny] = true;
-                q.offer(new Node(nx, ny));
-                visitCnt++;
+                int next     = nx * N + ny;
+                int nextMask = mask | (1 << next);
+
+                if ((mask & (1 << next)) != 0) continue;
+                if (visited[nextMask])          continue;
+
+                visited[nextMask] = true;
+                dfs(depth + 1, sCount + (isS[nx][ny] ? 1 : 0), nextMask);
             }
-        }
-
-        if (visitCnt == 7) {
-            ans++;
-        }
-    }
-
-    private static void clear() {
-        q.clear();
-
-        set.clear();
-        for (int o : order) {
-            set.add(o);
-        }
-
-        for (int i = 0; i < N; i++) {
-            Arrays.fill(visited[i], false);
         }
     }
 
