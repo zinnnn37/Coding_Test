@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -12,10 +10,9 @@ public class Main {
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    private static int           ans;
-    private static boolean[]     visited;
-    private static boolean[][]   isS;
-    private static List<Integer> selected;
+    private static int        ans;
+    private static boolean[]  visited;
+    private static boolean[][] isS;
 
     public static void main(String[] args) throws IOException {
         init();
@@ -31,7 +28,6 @@ public class Main {
             }
         }
         visited = new boolean[1 << SIZE];
-        selected = new ArrayList<>();
     }
 
     private static void sol() throws IOException {
@@ -40,9 +36,7 @@ public class Main {
 
             int mask = 1 << i;
             visited[mask] = true;
-            selected.add(i);
             dfs(1, 1, mask);
-            selected.remove(selected.size() - 1);
         }
 
         bw.write(ans + "");
@@ -59,8 +53,9 @@ public class Main {
             return;
         }
 
-        for (int idx = 0; idx < selected.size(); idx++) {
-            int i = selected.get(idx);
+        for (int i = 0; i < SIZE; i++) {
+            if ((mask & (1 << i)) == 0) continue;
+
             int x = i / N;
             int y = i % N;
 
@@ -74,12 +69,10 @@ public class Main {
                 int nextMask = mask | (1 << next);
 
                 if ((mask & (1 << next)) != 0) continue;
-                if (visited[nextMask]) continue;
+                if (visited[nextMask])          continue;
 
                 visited[nextMask] = true;
-                selected.add(next);
                 dfs(depth + 1, sCount + (isS[nx][ny] ? 1 : 0), nextMask);
-                selected.remove(selected.size() - 1);
             }
         }
     }
